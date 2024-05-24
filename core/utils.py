@@ -232,6 +232,7 @@ def linker(target_api: FilePath):
             output.write(astor.to_source(tree))
             
     replace_ellipsis_with_impl(target_api)
+    run_yapf([target_api])
             
 # Run the module as a program, with arguments for filepath and base_uri
 if __name__ == '__main__':
