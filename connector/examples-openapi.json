@@ -1,0 +1,31 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "examples": {
+      "postEventExample": {
+        "summary": "An example of a POST request body to the ERP Klio API.",
+        "description": "This is an example of a POST request body to the ERP Klio API. It is used to send an event to the ERP Klio API.",
+        "value": {
+          "id": 123,
+          "date_bl": "04/01/2022 00:00:00",
+          "date_creation": "04/01/2022 10:15:42",
+          "num_livraison": 12760,
+          "num_ligne_bon_livraison": 2,
+          "code_article": "SUCCANBIO",
+          "des1": "SUCRE DE CANNE MI BLANC  BIO",
+          "des2": "BIG BAG 1000 kg ou SAC 25 kg COLOMBIE",
+          "quantite": 3000.000,
+          "unite": "KGM",
+          "lot": "ECEL47212",
+          "fournisseur_cde": "Rutabaga SARL",
+          "adresse_cde": "4 allée des betteraves, 94576 CEDEX 2 RUNGIS",
+          "pays_cde": "FR",
+          "cp_cde": "94576",
+          "ville_cde": "RUNGIS"
+        }
+      }
+    }
+  },
+  "info": "This OpenAPI 3.0 file regroups reusable examples.",
+  "paths": {}
+}

@@ -1,0 +1,247 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cardiff Klio ERP Connector API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "description": "Operational API",
+      "url": "https://api.natixar.pro/connector/erp-klio/v1"
+    }
+  ],
+  "paths": {
+    "/{scenarioId}/last-id": {
+      "get": {
+        "x-comment": [
+          "Assumes that only one Klio application accesses the connector to the default Scenario",
+          "even if there are several workers actively receiving or shipping goods at the same time.",
+          "The order in which transactions are serialized in the database should be the reference."
+        ],
+        "operationId": "getLastId",
+        "summary": "Get the last-id in the scenario.",
+        "description": "### Function\nThis request enables a starting client to get the last id.\n\n### Usage\nCall this endpoint with the scenario UUID as the only parameter (in the path). Recover the returned `last-ID` and start posting new data with `id` set to ``last-ID + 1``\n\n### Returns\nThe response body must be parsed as an integer, which is the last id of the scenario.\n### Remarks\nThe `id` is a sequential number which must be increased by one for each successful POST operation. ",
+        "parameters": [
+          {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/parameters/ScenarioIdInPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "location": {
+                "$ref": "#/components/headers/Location"
+              }
+            },
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ERPEventId"
+                },
+                "example": 123
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": "0002-0004",
+                  "message": "The path parameter 'scenarioId' is not a well-formed UUID!"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ScenarioNotFound404"
+          }
+        }
+      }
+    },
+    "/{scenarioId}": {
+      "post": {
+        "x-comment": [
+          "Investigate Idempotency",
+          "https://docs.powertools.aws.dev/lambda/python/latest/utilities/idempotency/"
+        ],
+        "operationId": "postErpData",
+        "summary": "Post data to a specific scenario via the Klio ERP connector.",
+        "description": "### Function\nExtends the time-series data of a scenario with a new delivery event tracked by the Cardiff Klio ERP.\n\n### Usage\nCall this endpoint as soon as possible when a new delivery of goods occurs.\n\n### Syntax\nThe syntax of all the string-typed fields is identical to the database extraction supplied as an exemple of ERP data.\n### Returns\nThe 'Location' response header gives the URI of the new record.\n### Remarks\nThe POST operation is idempotent thanks to the `id` field.",
+        "parameters": [
+          {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/parameters/ScenarioIdInPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ERPEvent"
+              },
+              "examples": {
+                "good_body": {
+                  "$ref": "examples-openapi.json#/components/examples/postEventExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "location": {
+                "$ref": "#/components/headers/Location"
+              }
+            },
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Data successfully posted"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": "0002-0003",
+                  "message": "The posted data in the request body must conform to the OpenAPI schema https://static.natixar.pro/connector/erp-klio-openapi.json#/components/schemas/ERPEvent!"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ScenarioNotFound404"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ERPEventId": {
+        "type": "integer",
+        "example": 123
+      },
+      "ERPEvent": {
+        "type": "object",
+        "required": [
+          "id", "date_bl", "date_creation", "num_livraison", "num_ligne_bon_livraison",
+          "code_article", "des1", "des2", "quantite", "unite", "lot", "fournisseur_cde",
+          "adresse_cde", "pays_cde", "cp_cde", "ville_cde"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ERPEventId"
+          },
+          "date_bl": {
+            "type": "string"
+          },
+          "date_creation": {
+            "type": "string"
+          },
+          "num_livraison": {
+            "type": "integer",
+            "format": "long"
+          },
+          "num_ligne_bon_livraison": {
+            "type": "integer",
+            "format": "long"
+          },
+          "code_article": {
+            "type": "string"
+          },
+          "des1": {
+            "type": "string"
+          },
+          "des2": {
+            "type": "string"
+          },
+          "quantite": {
+            "type": "number",
+            "format": "double"
+          },
+          "unite": {
+            "type": "string"
+          },
+          "lot": {
+            "type": "string"
+          },
+          "fournisseur_cde": {
+            "type": "string"
+          },
+          "adresse_cde": {
+            "type": "string"
+          },
+          "pays_cde": {
+            "type": "string"
+          },
+          "cp_cde": {
+            "type": "string"
+          },
+          "ville_cde": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "$ref": "examples-openapi.json#/components/examples/postEventExample"
+        }
+      },
+      "Error": {
+        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components.json#/components/schemas/Error",
+        "description": "Schema of a JSON Error Response Body",
+        "type": "object",
+        "required": [ "code", "message" ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ScenarioNotFound404": {
+        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components.json#/components/responses/ScenarioNotFound404",
+        "x-status": "404",
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0002-0002",
+              "message": "Scenario with ID '67c7a3e7-f53f-4a88-b6d8-64539afde62c' was not found!"
+            }
+          }
+        }
+      }
+    },
+    "headers": {
+      "Location": {
+        "description": "The URI of the newly posted data. The last path component is the new last ID.",
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "example": "https://api.natixar.pro/connector/erp-klio/v1/deadbeef-1234-abcd-5678-1234567890ab/123"
+      }
+    }
+  }
+}
