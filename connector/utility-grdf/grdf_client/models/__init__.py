@@ -1,0 +1,92 @@
+# coding: utf-8
+
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from grdf_client.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from grdf_client.model.bordereau_publication import BordereauPublication
+from grdf_client.model.caracteristiques_compteur_detail import CaracteristiquesCompteurDetail
+from grdf_client.model.coeff_calcul import CoeffCalcul
+from grdf_client.model.conso_restit import ConsoRestit
+from grdf_client.model.conso_restit400 import ConsoRestit400
+from grdf_client.model.conso_restit500 import ConsoRestit500
+from grdf_client.model.consommation import Consommation
+from grdf_client.model.consulter_acces200_response import ConsulterAcces200Response
+from grdf_client.model.consulter_acces400_response import ConsulterAcces400Response
+from grdf_client.model.consulter_acces401_response import ConsulterAcces401Response
+from grdf_client.model.consulter_acces409_response import ConsulterAcces409Response
+from grdf_client.model.consulter_acces500_response import ConsulterAcces500Response
+from grdf_client.model.demander_acces_in import DemanderAccesIn
+from grdf_client.model.demander_acces_out import DemanderAccesOut
+from grdf_client.model.donnees_contractuelles import DonneesContractuelles
+from grdf_client.model.donnees_techniques import DonneesTechniques
+from grdf_client.model.droit_acces201_response import DroitAcces201Response
+from grdf_client.model.fin_acces200_response import FinAcces200Response
+from grdf_client.model.fin_acces404_response import FinAcces404Response
+from grdf_client.model.fin_acces409_response import FinAcces409Response
+from grdf_client.model.fin_acces500_response import FinAcces500Response
+from grdf_client.model.get_pce_id_pce_donnees_contractuelles200_response import GetPceIdPceDonneesContractuelles200Response
+from grdf_client.model.get_pce_id_pce_donnees_contractuelles400_response import GetPceIdPceDonneesContractuelles400Response
+from grdf_client.model.get_pce_id_pce_donnees_contractuelles500_response import GetPceIdPceDonneesContractuelles500Response
+from grdf_client.model.get_pce_id_pce_donnees_techniques200_response import GetPceIdPceDonneesTechniques200Response
+from grdf_client.model.get_pce_id_pce_donnees_techniques400_response import GetPceIdPceDonneesTechniques400Response
+from grdf_client.model.get_pce_id_pce_donnees_techniques500_response import GetPceIdPceDonneesTechniques500Response
+from grdf_client.model.index_brut_debut import IndexBrutDebut
+from grdf_client.model.index_brut_fin import IndexBrutFin
+from grdf_client.model.index_converti_debut import IndexConvertiDebut
+from grdf_client.model.index_converti_fin import IndexConvertiFin
+from grdf_client.model.injection import Injection
+from grdf_client.model.injection_restit import InjectionRestit
+from grdf_client.model.injection_restit400 import InjectionRestit400
+from grdf_client.model.injection_restit500 import InjectionRestit500
+from grdf_client.model.liste_acces_in import ListeAccesIn
+from grdf_client.model.liste_acces_out import ListeAccesOut
+from grdf_client.model.model1 import Model1
+from grdf_client.model.model2 import Model2
+from grdf_client.model.model3 import Model3
+from grdf_client.model.model4 import Model4
+from grdf_client.model.model5 import Model5
+from grdf_client.model.model6 import Model6
+from grdf_client.model.pce import Pce
+from grdf_client.model.pce_identifiant import PceIdentifiant
+from grdf_client.model.pce_identifiant_ko import PceIdentifiantKo
+from grdf_client.model.pce_ko import PceKo
+from grdf_client.model.periode import Periode
+from grdf_client.model.pitd_detail import PitdDetail
+from grdf_client.model.preuve200_response import Preuve200Response
+from grdf_client.model.profil import Profil
+from grdf_client.model.releve_debut import ReleveDebut
+from grdf_client.model.releve_fin import ReleveFin
+from grdf_client.model.retour200_donnees_contractuelles import Retour200DonneesContractuelles
+from grdf_client.model.retour200_donnees_techniques import Retour200DonneesTechniques
+from grdf_client.model.retour200_fin_acces import Retour200FinAcces
+from grdf_client.model.retour200_transmettre_preuve import Retour200TransmettrePreuve
+from grdf_client.model.retour201_demander_acces import Retour201DemanderAcces
+from grdf_client.model.retour400_consulter_acces import Retour400ConsulterAcces
+from grdf_client.model.retour400_demander_acces import Retour400DemanderAcces
+from grdf_client.model.retour400_donnees_contractuelles import Retour400DonneesContractuelles
+from grdf_client.model.retour400_donnees_techniques import Retour400DonneesTechniques
+from grdf_client.model.retour400_statut_restitution import Retour400StatutRestitution
+from grdf_client.model.retour400_transmettre_preuve import Retour400TransmettrePreuve
+from grdf_client.model.retour401_consulter_acces import Retour401ConsulterAcces
+from grdf_client.model.retour404_demander_acces import Retour404DemanderAcces
+from grdf_client.model.retour404_fin_acces import Retour404FinAcces
+from grdf_client.model.retour409_consulter_acces import Retour409ConsulterAcces
+from grdf_client.model.retour409_demander_acces import Retour409DemanderAcces
+from grdf_client.model.retour409_fin_acces import Retour409FinAcces
+from grdf_client.model.retour409_transmettre_preuve import Retour409TransmettrePreuve
+from grdf_client.model.retour500_consulter_acces import Retour500ConsulterAcces
+from grdf_client.model.retour500_demander_acces import Retour500DemanderAcces
+from grdf_client.model.retour500_donnees_contractuelles import Retour500DonneesContractuelles
+from grdf_client.model.retour500_donnees_techniques import Retour500DonneesTechniques
+from grdf_client.model.retour500_fin_acces import Retour500FinAcces
+from grdf_client.model.retour500_statut_restitution import Retour500StatutRestitution
+from grdf_client.model.retour500_transmettre_preuve import Retour500TransmettrePreuve
+from grdf_client.model.situation_compteur_detail import SituationCompteurDetail

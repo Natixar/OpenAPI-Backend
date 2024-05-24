@@ -1,0 +1,20 @@
+# grdf_client.model.liste_acces_in.ListeAccesIn
+
+informations transmises au service
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+dict, frozendict.frozendict,  | frozendict.frozendict,  | informations transmises au service | 
+
+### Dictionary Keys
+Key | Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | ------------- | -------------
+**role_tiers** | str,  | str,  |  | [optional] 
+**id_pce** | str,  | str,  |  | [optional] 
+**statut_controle_preuve** | str,  | str,  |  | [optional] 
+**etat_droit_acces** | str,  | str,  |  | [optional] 
+**any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
+
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

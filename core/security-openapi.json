@@ -1,0 +1,20 @@
+{
+  "components": {
+    "securitySchemes": {
+      "fusionauth-oidc": {
+        "type": "oauth2",
+        "flows": {},
+        "x-amazon-apigateway-authorizer": {
+          "identitySource": "$request.header.Authorization",
+          "jwtConfiguration": {
+            "audience": [
+              "5e9cba0b-4978-4a24-88c0-0a45b0ed067f"
+            ],
+            "issuer": "https://auth.natixar.pro"
+          },
+          "type": "jwt"
+        }
+      }
+    }
+  }
+}

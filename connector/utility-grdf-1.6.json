@@ -1,0 +1,2152 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Cette API vous permet de gérer vos droits d'accès aux données des PCE et de consulter leurs données contractuelles, techniques, de consommation publiées / informatives et d'injections publiées.",
+    "version" : "v2",
+    "title" : "API B2B ADICT V2",
+    "termsOfService" : "https://www.grdf.fr/mentions-legales-grdf",
+    "contact" : {
+      "name" : "Contact",
+      "url" : "https://www.grdf.fr/contact-entreprises"
+    }
+  },
+  "host" : "api.grdf.fr",
+  "basePath" : "/adict/v2",
+  "tags" : [ {
+    "name" : "Droits d'accès, Consommations, Injections, Données contractuelles et techniques",
+    "description" : "Opérations sur les droits d'accès et sur la restitution des données contractuelles, techniques, de consommation et d'injection"
+  } ],
+  "schemes" : [ "http", "https" ],
+  "security" : [ {
+    "OAuth (External)Implicit" : [ "/adict/v2" ]
+  }, {
+    "OAuth (External)Implicit" : [ " apim_vabf" ]
+  }, {
+    "OAuth (External)AccessCode" : [ "/adict/v2" ]
+  }, {
+    "OAuth (External)AccessCode" : [ " apim_vabf" ]
+  } ],
+  "paths" : {
+    "/pce/{id_pce}/donnees_consos_informatives" : {
+      "get" : {
+        "tags" : [ "Données de consommation" ],
+        "summary" : "Consulter les consommations informatives du PCE demandé",
+        "description" : "Ce service vous permet de consulter les données de consommation informatives d’un  PCE pour une période de restitution demandée.",
+        "operationId" : "getPceId_pceDonnees_consos_informatives",
+        "produces" : [ "application/x-ndjson" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel les données de consommations informatives doivent être consultées (exemple : 24231114321628)",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "(^GI\\d{6}$|^\\d{14}$)"
+        }, {
+          "name" : "periode",
+          "in" : "query",
+          "description" : "Période de consultation (exemple : 2018)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "(^\\d{4}$)|(^PN-\\d{4}$)|(^\\d{4}-\\d{2}$)|(^PN-\\d{4}-\\d{2}$)|(^\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}-\\d{1}$)|(^\\d{4}-\\d{3})$"
+        }, {
+          "name" : "date_debut",
+          "in" : "query",
+          "description" : "Date de début de consultation (exemple : 2018-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        }, {
+          "name" : "date_fin",
+          "in" : "query",
+          "description" : "Date de fin de consultation (exemple : 2019-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : Aucun droit d'accès pour tous les PCE en entrée. / Le client semble avoir déménagé et n'est plus titulaire de ce PCE, vous ne pouvez donc plus accéder à ses données. / Votre droit d’accès sur ce PCE a expiré. Pour continuer à accéder aux données, vous devez faire une nouvelle demande d'accès et, le cas échéant, renouveler le consentement du titulaire. / La preuve de consentement fournie lors du contrôle opéré par GRDF n’est pas valide. / GRDF a passé le droit d'accès à l'état obsolète. / Votre contrat GRDF ADICT est expiré. Veuillez prendre contact avec GRDF pour le renouveler. / Vos droits d’accès aux données des PCE ont été suspendus en raison d’une mauvaise utilisation de la plateforme. Veuillez prendre contact avec GRDF. / Le client titulaire a révoqué son consentement, vous ne pouvez plus accéder aux données de ce PCE. / GRDF a révoqué votre droit d’accès aux données de ce PCE à la demande du client titulaire. / Vous avez révoqué votre droit d’accès aux données de ce PCE. / Vous n'êtes pas autorisé à consulter les données de ce PCE. / Vous n'êtes pas ou plus autorisé à consulter les données de ce PCE. / Il n'y a pas de données correspondant à ce PCE sur la période demandée. / Le périmètre des données auxquelles vous avez accès pour ce PCE ne couvre pas les données de consommations informatives. / Le serveur a rencontré une erreur lors de l'exécution de la requête. Veuillez retenter votre appel sur la période mentionnée ci-dessus.",
+            "schema" : {
+              "$ref" : "#/definitions/Conso_restit"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres). / Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement. / Le format du paramètre 'date_debut' et / ou 'date_fin' n’est pas au format YYYY-MM-DD. / Le format du paramètre 'periode' n’est pas à un format attendu valide (YYYY, YYYY-NN, YYYY-WNN, YYYY-NNN, PN-YYYY, PN-YYYY-NN, PN-YYYY-WNN, PN-YYYY-WMM-N). / Le paramètre 'date_fin' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' ne doit pas être antérieur à la date du jour - 3 ans. / Seul le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / Le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / La date de début renseignée doit être antérieure à la date de fin. / Le paramètre 'date_fin' doit être inférieur ou égal à la date du jour. / Donnée(s) obligatoire(s) manquante(s) / Format(s) de donnée(s) incorrect(s)",
+            "schema" : {
+              "$ref" : "#/definitions/Conso_restit_400"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement.",
+            "schema" : {
+              "$ref" : "#/definitions/Conso_restit_500"
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/pce/{id_pce}/donnees_contractuelles" : {
+      "get" : {
+        "tags" : [ "Données contractuelles" ],
+        "summary" : "Consulter les données contractuelles du PCE demandé",
+        "description" : "Ce service vous permet de consulter les données contractuelles d’un PCE.",
+        "operationId" : "getPceId_pceDonnees_contractuelles",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel les données contractuelles doivent être consultées (exemple : GI123456)",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "(^GI\\d{6}$|^\\d{14}$)"
+        }, {
+          "name" : "filtre",
+          "in" : "query",
+          "description" : "Filtres complémentaires cumulables (par ex : filtre=cja&filtre=car)",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : Le client semble avoir déménagé et n'est plus titulaire de ce PCE, vous ne pouvez donc plus accéder à ses données. / Votre droit d’accès sur ce PCE a expiré. Pour continuer à accéder aux données, vous devez faire une nouvelle demande d'accès et, le cas échéant, renouveler le consentement du titulaire. / La preuve de consentement fournie lors du contrôle opéré par GRDF n’est pas valide. / Votre contrat GRDF ADICT est expiré. Veuillez prendre contact avec GRDF pour le renouveler. / GRDF a passé le droit d'accès à l'état obsolète. / Vos droits d’accès aux données des PCE ont été suspendus en raison d’une mauvaise utilisation de la plateforme. Veuillez prendre contact avec GRDF. / Le client titulaire a révoqué son consentement, vous ne pouvez plus accéder aux données de ce PCE. / GRDF a révoqué votre droit d’accès aux données de ce PCE à la demande du client titulaire. / Vous avez révoqué votre droit d’accès sur ce PCE. / Vous n'êtes pas autorisé à consulter les données de ce PCE. / Vous n'êtes pas ou plus autorisé à consulter les données de ce PCE. / Il n'y a pas de données correspondant à ce PCE sur la période demandée. / Le périmètre des données auxquelles vous avez accès pour ce PCE ne couvre pas les données contractuelles.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_donnees_contractuelles"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : Le filtre spécifié n'est pas valide. / L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres).",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_400_donnees_contractuelles"
+              } ]
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_500_donnees_contractuelles"
+              } ]
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/droit_acces/{id_droit_acces}" : {
+      "patch" : {
+        "tags" : [ "Droits d'accès" ],
+        "summary" : "Révoquer un droit d'accès en tant que tiers AUTORISE",
+        "description" : "Ce service vous permet de révoquer votre droit d'accès aux données d'un PCE.",
+        "operationId" : "fin_acces",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id_droit_acces",
+          "in" : "path",
+          "description" : "Identifiant du droit d'accès à revoquer",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : L'opération s'est déroulée avec succès.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_fin_acces"
+              } ]
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_500_fin_acces"
+              } ]
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND : Aucun droit d’accès trouvé.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_404_fin_acces"
+              } ]
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT : Le demande est incohérente. / Le droit d'accès à révoquer n'existe pas. / Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_409_fin_acces"
+              } ]
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/pce/{id_pce}/donnees_consos_publiees" : {
+      "get" : {
+        "tags" : [ "Données de consommation" ],
+        "summary" : "Consulter les consommations publiées du PCE demandé",
+        "description" : "Ce service vous permet de consulter les données de consommation publiées d’un PCE  pour une période de restitution demandée.",
+        "operationId" : "getPceId_pceDonnees_consos_publiees",
+        "produces" : [ "application/x-ndjson" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel les données de consommations publiées doivent être consultées (exemple : 24231114321628)",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "(^GI\\d{6}$|^\\d{14}$)"
+        }, {
+          "name" : "periode",
+          "in" : "query",
+          "description" : "Période de consultation (exemple : 2018)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "(^\\d{4}$)|(^PN-\\d{4}$)|(^\\d{4}-\\d{2}$)|(^PN-\\d{4}-\\d{2}$)|(^\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}-\\d{1}$)|(^\\d{4}-\\d{3})$"
+        }, {
+          "name" : "date_debut",
+          "in" : "query",
+          "description" : "Date de début de consultation (exemple : 2018-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        }, {
+          "name" : "date_fin",
+          "in" : "query",
+          "description" : "Date de fin de consultation (exemple : 2019-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : Aucun droit d'accès pour tous les PCE en entrée. / Le client semble avoir déménagé et n'est plus titulaire de ce PCE, vous ne pouvez donc plus accéder à ses données. / Votre droit d’accès sur ce PCE a expiré. Pour continuer à accéder aux données, vous devez faire une nouvelle demande d'accès et, le cas échéant, renouveler le consentement du titulaire. / La preuve de consentement fournie lors du contrôle opéré par GRDF n’est pas valide. / GRDF a passé le droit d'accès à l'état obsolète. / Votre contrat GRDF ADICT est expiré. Veuillez prendre contact avec GRDF pour le renouveler. / Vos droits d’accès aux données des PCE ont été suspendus en raison d’une mauvaise utilisation de la plateforme. Veuillez prendre contact avec GRDF. / Le client titulaire a révoqué son consentement, vous ne pouvez plus accéder aux données de ce PCE. / GRDF a révoqué votre droit d’accès aux données de ce PCE à la demande du client titulaire. / Vous avez révoqué votre droit d’accès aux données de ce PCE. / Vous n'êtes pas autorisé à consulter les données de ce PCE. / Vous n'êtes pas ou plus autorisé à consulter les données de ce PCE. / Il n'y a pas de données correspondant à ce PCE sur la période demandée. / Le périmètre des données auxquelles vous avez accès pour ce PCE ne couvre pas les données de consommations publiées. / Le serveur a rencontré une erreur lors de l'exécution de la requête. Veuillez retenter votre appel sur la période mentionnée ci-dessus.",
+            "schema" : {
+              "$ref" : "#/definitions/Model_1"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres). / Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement. / Le format du paramètre 'date_debut' et / ou 'date_fin' n’est pas au format YYYY-MM-DD. / Le format du paramètre 'periode' n’est pas à un format attendu valide (YYYY, YYYY-NN, YYYY-WNN, YYYY-NNN, PN-YYYY, PN-YYYY-NN, PN-YYYY-WNN, PN-YYYY-WMM-N). / Le paramètre 'date_fin' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' ne doit pas être antérieur à la date du jour - 5 ans. / Seul le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / Le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / La date de début renseignée doit être antérieure à la date de fin. / Le paramètre 'date_fin' doit être inférieur ou égal à la date du jour. / Donnée(s) obligatoire(s) manquante(s) / Format(s) de donnée(s) incorrect(s)",
+            "schema" : {
+              "$ref" : "#/definitions/Conso_restit_400"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement.",
+            "schema" : {
+              "$ref" : "#/definitions/Conso_restit_500"
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/pce/{id_pce}/donnees_injections_publiees" : {
+      "get" : {
+        "tags" : [ "Données d'injection" ],
+        "summary" : "Consulter les injections publiées du PCE demandé",
+        "description" : "Ce service vous permet de consulter les données d'injection publiées d’un PCE  pour une période de restitution demandée.",
+        "operationId" : "getPceId_pceDonnees_injections_publiees",
+        "produces" : [ "application/x-ndjson" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel les données d'injection publiées doivent être consultées (exemple : 24231114321628)",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "(^GI\\d{6}$|^\\d{14}$)"
+        }, {
+          "name" : "periode",
+          "in" : "query",
+          "description" : "Période de consultation (exemple : 2018)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "(^\\d{4}$)|(^PN-\\d{4}$)|(^\\d{4}-\\d{2}$)|(^PN-\\d{4}-\\d{2}$)|(^\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}$)|(^PN-\\d{4}-W\\d{2}-\\d{1}$)|(^\\d{4}-\\d{3})$"
+        }, {
+          "name" : "date_debut",
+          "in" : "query",
+          "description" : "Date de début de consultation (exemple : 2018-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        }, {
+          "name" : "date_fin",
+          "in" : "query",
+          "description" : "Date de fin de consultation (exemple : 2019-01-01)",
+          "required" : false,
+          "type" : "string",
+          "pattern" : "YYYY-MM-DD",
+          "format" : "date"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : Aucun droit d'accès pour tous les PCE en entrée. / Le client semble avoir déménagé et n'est plus titulaire de ce PCE, vous ne pouvez donc plus accéder à ses données. / Votre droit d’accès sur ce PCE a expiré. Pour continuer à accéder aux données, vous devez faire une nouvelle demande d'accès et, le cas échéant, renouveler le consentement du titulaire. / La preuve de consentement fournie lors du contrôle opéré par GRDF n’est pas valide. / GRDF a passé le droit d'accès à l'état obsolète. / Votre contrat GRDF ADICT est expiré. Veuillez prendre contact avec GRDF pour le renouveler. / Vos droits d’accès aux données des PCE ont été suspendus en raison d’une mauvaise utilisation de la plateforme. Veuillez prendre contact avec GRDF. / Le client titulaire a révoqué son consentement, vous ne pouvez plus accéder aux données de ce PCE. / GRDF a révoqué votre droit d’accès aux données de ce PCE à la demande du client titulaire. / Vous avez révoqué votre droit d’accès aux données de ce PCE. / Vous n'êtes pas autorisé à consulter les données de ce PCE. / Vous n'êtes pas ou plus autorisé à consulter les données de ce PCE. / Il n'y a pas de données correspondant à ce PCE sur la période demandée. / Le périmètre des données auxquelles vous avez accès pour ce PCE ne couvre pas les données d'injections publiées. / Le serveur a rencontré une erreur lors de l'exécution de la requête. Veuillez retenter votre appel sur la période mentionnée ci-dessus.",
+            "schema" : {
+              "$ref" : "#/definitions/Model_5"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres). / Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement. / Le format du paramètre 'date_debut' et / ou 'date_fin' n’est pas au format YYYY-MM-DD. / Le format du paramètre 'periode' n’est pas à un format attendu valide (YYYY, YYYY-NN, YYYY-WNN, YYYY-NNN, PN-YYYY, PN-YYYY-NN, PN-YYYY-WNN, PN-YYYY-WMM-N). / Le paramètre 'date_fin' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' est obligatoire et doit être renseigné au format YYYY-MM-DD. / Le paramètre 'date_debut' ne doit pas être antérieur à la date du jour - 5 ans. / Seul le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / Le paramètre 'periode' ou les paramètres 'date_debut' / 'date_fin' doivent être renseignés. / La date de début renseignée doit être antérieure à la date de fin. / Le paramètre 'date_fin' doit être inférieur ou égal à la date du jour. / Donnée(s) obligatoire(s) manquante(s) / Format(s) de donnée(s) incorrect(s)",
+            "schema" : {
+              "$ref" : "#/definitions/Injection_restit_400"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement.",
+            "schema" : {
+              "$ref" : "#/definitions/Injection_restit_500"
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/droit_acces/{id_droit_acces}/preuves" : {
+      "put" : {
+        "tags" : [ "Droits d'accès" ],
+        "summary" : "Transmettre une preuve",
+        "description" : "Ce service vous permet de transmettre une ou plusieurs preuves de consentement pour un droit d'accès spécifique.",
+        "operationId" : "preuve",
+        "consumes" : [ "multipart/form-data" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id_droit_acces",
+          "in" : "path",
+          "description" : "Identifiant du droit d'accès pour lequel une preuve de consentement doit être transmise",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "preuves",
+          "in" : "formData",
+          "description" : "Liste des preuves à transmettre (au maximum 3 preuves de 4Mo)",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : "binary"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : L'opération s'est déroulée avec succès.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_transmettre_preuve"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : La forme de la requête est incorrecte.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_400_transmettre_preuve"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Une erreur technique est survenue.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_500_transmettre_preuve"
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT : Le nombre maximal autorisé de 3 preuves est dépassé. / Une ou plusieurs preuves ne possèdent pas un format autorisé. / GRDF ne demande pas de preuve sur ce droit d'accès. / Le contrat de fourniture de gaz est échu. / La taille maximale autorisée de 4Mo d’une ou plusieurs preuves est dépassée. / Le traitement n'a pu aboutir car une ou plusieurs preuves sont corrompues et présentent un risque de sécurité.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_409_transmettre_preuve"
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/pce/{id_pce}/donnees_techniques" : {
+      "get" : {
+        "tags" : [ "Données techniques" ],
+        "summary" : "Consulter les données techniques du PCE demandé",
+        "description" : "Ce service vous permet de consulter les données techniques d’un PCE.",
+        "operationId" : "getPceId_pceDonnees_techniques",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel les données techniques doivent être consultées (exemple : GI123456)",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "(^GI\\d{6}$|^\\d{14}$)"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : Aucun droit d'accès pour tous les PCE en entrée. / Le client semble avoir déménagé et n'est plus titulaire de ce PCE, vous ne pouvez donc plus accéder à ses données. / Votre droit d’accès sur ce PCE a expiré. Pour continuer à accéder aux données, vous devez faire une nouvelle demande d'accès et, le cas échéant, renouveler le consentement du titulaire. / La preuve de consentement fournie lors du contrôle opéré par GRDF n’est pas valide. / Votre contrat GRDF ADICT est expiré. Veuillez prendre contact avec GRDF pour le renouveler. / GRDF a passé le droit d'accès à l'état obsolète. / Vos droits d’accès aux données des PCE ont été suspendus en raison d’une mauvaise utilisation de la plateforme. Veuillez prendre contact avec GRDF. / Le client titulaire a révoqué son consentement, vous ne pouvez plus accéder aux données de ce PCE. / GRDF a révoqué votre droit d’accès aux données de ce PCE à la demande du client titulaire. / Vous avez révoqué votre droit d’accès sur ce PCE. / Vous n'êtes pas autorisé à consulter les données de ce PCE. / Vous n'êtes pas ou plus autorisé à consulter les données de ce PCE. / Il n'y a pas de données correspondant à ce PCE sur la période demandée. / Le périmètre des données auxquelles vous avez accès pour ce PCE ne couvre pas les données techniques.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_donnees_techniques"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres).",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_400_donnees_techniques"
+              } ]
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_500_donnees_techniques"
+              } ]
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/pce/{id_pce}/droit_acces" : {
+      "put" : {
+        "tags" : [ "Droits d'accès" ],
+        "summary" : "Déclarer l'accès aux données d'un PCE",
+        "description" : "Ce service vous permet de déclarer un droit d'accès préalablement à la consultation des données d'un PCE.",
+        "operationId" : "droit_acces",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id_pce",
+          "in" : "path",
+          "description" : "Identifiant du PCE pour lequel un droit d'accès doit être déclaré",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Paramètres d'appel",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/demander_acces_in"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "CREATED : L'opération s'est déroulée avec succès. / La demande d'accès est en attente de la validation du titulaire du PCE.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_201_demander_acces"
+              }, {
+                "$ref" : "#/definitions/demander_acces_out"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : Votre rôle dans la demande d'accès n'est pas renseigné. / Le nom ou la raison sociale du titulaire doit être renseigné. / Seul le nom ou la raison sociale du titulaire doit être renseigné. / Le format de la date de fin d'accès est incorrect. / Le périmètre d'accès doit être renseigné. / Le format du courriel du titulaire est incorrect. / Le code postal n'est pas renseigné. / Le courriel du titulaire n'est pas renseigné. / Le périmètre d'accès aux données contractuelles doit être renseigné à Vrai ou Faux. / La date de début du périmètre relatif aux données de consommation est obligatoire et doit être renseignée au format YYYY-MM-DD. / Le périmètre d'accès aux données techniques doit être renseigné à Vrai ou Faux. / Le périmètre d'accès aux données contractuelles doit être renseigné à Vrai ou Faux. / Le périmètre d'accès aux données publiées doit être renseigné à Vrai ou Faux. / Le périmètre d'accès aux données informatives doit être renseigné à Vrai ou Faux. / La date de fin du périmètre relatif aux données de consommation est obligatoire et doit être renseignée au format YYYY-MM-DD. / Le numéro de téléphone mobile du titulaire renseigné n'est pas correctement formaté. / La date de début du périmètre relatif aux données de consommation doit être renseignée au format YYYY-MM-DD ou null ou vide. / La date de fin du périmètre relatif aux données de consommation doit être renseignée au format YYYY-MM-DD ou null ou vide. / La date de début du droit d’accès est obligatoire et doit être renseignée au format YYYY-MM-DD. / La date de fin du droit d’accès est obligatoire et doit être renseignée au format YYYY-MM-DD. / Le format du code postal est incorrect. / Le format du PCE est incorrect.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_400_demander_acces"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Une erreur technique est survenue.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_500_demander_acces"
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND : Le PCE est inconnu.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_404_demander_acces"
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT : Un droit d'accès existe déjà. / Le contrat de fourniture de gaz est échu. / Le code postal ne correspond pas à l'adresse du PCE. / Le droit d'accès est révoqué. / La demande d'accès est incohérente. / La demande d'accès est en attente de la validation du titulaire du PCE. / La date de fin du droit d’accès doit être supérieure ou égale à la date du jour. / La date de début du droit d’accès doit être inférieure ou égale à la date du jour. / La date de début du périmètre relatif aux données de consommation doit être inférieure ou égale à la date du jour. / La date de fin du périmètre relatif aux données de consommation doit être supérieure ou égale à la date de début du périmètre relatif aux données de consommation. /  La date de fin du périmètre relatif aux données de consommation doit être inférieure ou égale à la date de fin du droit d’accès.",
+            "schema" : {
+              "$ref" : "#/definitions/retour_409_demander_acces"
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    },
+    "/droits_acces" : {
+      "get" : {
+        "tags" : [ "Droits d'accès" ],
+        "summary" : "Consulter mes droits d'accès",
+        "description" : "Ce service vous permet de consulter l'ensemble de vos droits d'accès aux données des PCE.",
+        "operationId" : "consulter_acces",
+        "produces" : [ "application/x-ndjson" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : L'opération s'est déroulée avec succès. / Aucun droit d’accès trouvé.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_consulter_acces"
+              }, {
+                "$ref" : "#/definitions/liste_acces_out"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_400_consulter_acces"
+              } ]
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_401_consulter_acces"
+              } ]
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_500_consulter_acces"
+              } ]
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_409_consulter_acces"
+              } ]
+            }
+          }
+        },
+        "x-axway" : { }
+      },
+      "post" : {
+        "tags" : [ "Droits d'accès" ],
+        "summary" : "Consulter des droits d'accès spécifiques",
+        "description" : "Ce service vous permet de consulter l'ensemble de vos droits d'accès aux données des PCE en fonction des filtres saisis en entrée.",
+        "operationId" : "POST /droits_acces",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/x-ndjson" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Paramètres d'appel",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/liste_acces_in"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS : L'opération s'est déroulée avec succès. / Aucun droit d’accès trouvé.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_200_consulter_acces"
+              }, {
+                "$ref" : "#/definitions/liste_acces_out"
+              } ]
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_400_consulter_acces"
+              } ]
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_401_consulter_acces"
+              } ]
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL SERVER ERROR : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_500_consulter_acces"
+              } ]
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT : Une erreur technique est survenue.",
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/definitions/retour_409_consulter_acces"
+              } ]
+            }
+          }
+        },
+        "x-axway" : { }
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "OAuth (External)AccessCode" : {
+      "description" : "OAuth (External)",
+      "type" : "oauth2",
+      "authorizationUrl" : "https://localhost:8089/api/oauth/authorize",
+      "tokenUrl" : "https://localhost:8089/api/oauth/token",
+      "flow" : "accessCode",
+      "scopes" : {
+        "/adict/v2" : "",
+        " apim_vabf" : ""
+      },
+      "x-axway" : {
+        "clientSecretName" : "client_secret",
+        "authorizationHeaderPrefix" : "",
+        "accessTokenLocationQueryString" : "Bearer",
+        "clientIdName" : "client_id",
+        "tokenName" : "access_code",
+        "scopesMatching" : "Any",
+        "accessTokenLocation" : "HEADER",
+        "typeDisplayName" : "OAuth 2.0"
+      }
+    },
+    "OAuth (External)Implicit" : {
+      "description" : "OAuth (External)",
+      "type" : "oauth2",
+      "authorizationUrl" : "https://localhost:8089/api/oauth/authorize",
+      "flow" : "implicit",
+      "scopes" : {
+        "/adict/v2" : "",
+        " apim_vabf" : ""
+      },
+      "x-axway" : {
+        "accessTokenLocationQueryString" : "Bearer",
+        "tokenName" : "access_token",
+        "scopesMatching" : "Any",
+        "accessTokenLocation" : "HEADER",
+        "typeDisplayName" : "OAuth 2.0",
+        "authorizationHeaderPrefix" : ""
+      }
+    }
+  },
+  "definitions" : {
+    "index_converti_fin" : {
+      "type" : "object",
+      "properties" : {
+        "valeur_index" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "horodate_Index" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        }
+      }
+    },
+    "releve_debut" : {
+      "type" : "object",
+      "properties" : {
+        "date_releve" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "raison_releve" : {
+          "type" : "string",
+          "example" : "RNO"
+        },
+        "libelle_raison_releve" : {
+          "type" : "string",
+          "example" : "Fin de situation"
+        },
+        "qualite_releve" : {
+          "type" : "string",
+          "example" : "Estimation"
+        },
+        "statut_releve" : {
+          "type" : "string",
+          "example" : "Normal"
+        },
+        "index_brut_debut" : {
+          "$ref" : "#/definitions/index_brut_debut"
+        },
+        "index_converti_debut" : {
+          "$ref" : "#/definitions/index_converti_debut"
+        }
+      }
+    },
+    "pce_identifiant_ko" : {
+      "type" : "object",
+      "required" : [ "id_pce" ],
+      "properties" : {
+        "id_pce" : {
+          "type" : "string",
+          "example" : "GI123"
+        }
+      }
+    },
+    "liste_acces_out" : {
+      "type" : "object",
+      "properties" : {
+        "id_droit_acces" : {
+          "type" : "string",
+          "example" : "3044b042-2f6a-4172-9a75-b7e1bbbb0cfd",
+          "description" : "UUID de l'accreditation"
+        },
+        "id_pce" : {
+          "type" : "string",
+          "example" : "09739073800875",
+          "description" : "identifiant du PCE"
+        },
+        "role_tiers" : {
+          "type" : "string",
+          "description" : "le rôle du tiers dans l'accès",
+          "enum" : [ "AUTORISE_CONTRAT_FOURNITURE", "DETENTEUR_CONTRAT_FOURNITURE, AUTORISE_CONTRAT_INJECTION", "DETENTEUR_CONTRAT_INJECTION" ]
+        },
+        "raison_sociale_du_tiers" : {
+          "type" : "string",
+          "example" : "GRDF-SIDC"
+        },
+        "nom_titulaire" : {
+          "type" : "string",
+          "example" : "M. CHAPEAU JEAN CHARLES"
+        },
+        "raison_sociale_du_titulaire" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "courriel_titulaire" : {
+          "type" : "string",
+          "example" : "toto@example.com"
+        },
+        "numero_telephone_mobile_titulaire" : {
+          "type" : "string",
+          "example" : "0699999999"
+        },
+        "code_postal" : {
+          "type" : "string",
+          "example" : "37000",
+          "description" : "code postal du PCE"
+        },
+        "date_debut_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2019-07-05"
+        },
+        "date_fin_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-07-26"
+        },
+        "perim_donnees_conso_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01",
+          "description" : "Date de début d’autorisation du périmètre des données de consommation (AAAA-MM-JJ)"
+        },
+        "perim_donnees_conso_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-12-31",
+          "description" : "Date de fin d’autorisation du périmètre des données de consommation (AAAA-MM-JJ)"
+        },
+        "perim_donnees_inj_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01",
+          "description" : "Date de début d’autorisation du périmètre des données d'injection (AAAA-MM-JJ)"
+        },
+        "perim_donnees_inj_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-12-31",
+          "description" : "Date de fin d’autorisation du périmètre des données d'injection (AAAA-MM-JJ)"
+        },
+        "perim_donnees_contractuelles" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "vrai"
+        },
+        "perim_donnees_techniques" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "vrai"
+        },
+        "perim_donnees_informatives" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "faux"
+        },
+        "perim_donnees_publiees" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "faux"
+        },
+        "date_creation" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2022-07-26 10:33:11",
+          "description" : "date de création du droit d'accès"
+        },
+        "etat_droit_acces" : {
+          "type" : "string",
+          "example" : "Active"
+        },
+        "date_revocation" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "null",
+          "description" : "date de révocation du droit d'accès"
+        },
+        "source_revocation" : {
+          "type" : "string",
+          "example" : "null",
+          "description" : "la source du passage à l'état révoqué"
+        },
+        "date_passage_a_obsolete" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "null",
+          "description" : "date de passage à l état obsolète du droit d'accès"
+        },
+        "source_passage_a_obsolete" : {
+          "type" : "string",
+          "example" : "null",
+          "description" : "origine du passage à l état obsolète"
+        },
+        "date_passage_a_refuse" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "null",
+          "description" : "la date de passage à l'état refusé"
+        },
+        "source_passage_a_refuse" : {
+          "type" : "string",
+          "example" : "null",
+          "description" : "la source de passage à l'état refusé"
+        },
+        "parcours" : {
+          "type" : "string",
+          "example" : "TIERS_DIRECT"
+        },
+        "statut_controle_preuve" : {
+          "type" : "string",
+          "example" : "Preuve en attente"
+        },
+        "date_limite_transmission_preuve" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-01-01"
+        }
+      },
+      "description" : "liste des droits d'accès retournée par le service `/consulter_acces`"
+    },
+    "retour_409_fin_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000003"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "liste_acces_in" : {
+      "properties" : {
+        "role_tiers" : {
+          "type" : "string"
+        },
+        "id_pce" : {
+          "type" : "string"
+        },
+        "statut_controle_preuve" : {
+          "type" : "string"
+        },
+        "etat_droit_acces" : {
+          "type" : "string"
+        }
+      },
+      "description" : "informations transmises au service"
+    },
+    "retour_201_demander_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "0000000002"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "La demande d'accès est en attente de la validation du titulaire du PCE."
+        }
+      }
+    },
+    "coeff_calcul" : {
+      "type" : "object",
+      "properties" : {
+        "coeff_pta" : {
+          "type" : "number",
+          "example" : 12.123
+        },
+        "valeur_pcs" : {
+          "type" : "number",
+          "example" : 12.123
+        },
+        "coeff_conversion" : {
+          "type" : "number",
+          "example" : 12.12
+        }
+      }
+    },
+    "retour_409_demander_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000013"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Le droit d'accès est révoqué."
+        }
+      }
+    },
+    "pce_identifiant" : {
+      "type" : "object",
+      "required" : [ "id_pce" ],
+      "properties" : {
+        "id_pce" : {
+          "type" : "string",
+          "example" : "GI123456"
+        }
+      }
+    },
+    "Conso_restit_500" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "releve_fin" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "consommation" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_500_statut_restitution"
+        }
+      }
+    },
+    "Injection_restit_500" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "releve_fin" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "injection" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_500_statut_restitution"
+        }
+      }
+    },
+    "retour_200_transmettre_preuve" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "0000000000"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "L'opération s'est déroulée avec succès."
+        }
+      }
+    },
+    "retour_401_consulter_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000001"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_200_consulter_acces" : {
+      "type" : "object"
+    },
+    "Model_1" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "$ref" : "#/definitions/releve_debut"
+        },
+        "releve_fin" : {
+          "$ref" : "#/definitions/releve_fin"
+        },
+        "consommation" : {
+          "$ref" : "#/definitions/consommation"
+        },
+        "bordereau_publication" : {
+          "$ref" : "#/definitions/bordereau_publication"
+        },
+        "statut_restitution" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "Model_5" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "$ref" : "#/definitions/releve_debut"
+        },
+        "releve_fin" : {
+          "$ref" : "#/definitions/releve_fin"
+        },
+        "injection" : {
+          "$ref" : "#/definitions/injection"
+        },
+        "bordereau_publication" : {
+          "$ref" : "#/definitions/bordereau_publication"
+        },
+        "statut_restitution" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "retour_200_donnees_techniques" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant"
+        },
+        "donnees_techniques" : {
+          "$ref" : "#/definitions/donnees_techniques"
+        },
+        "statut_restitution" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "Model_4" : {
+      "type" : "object",
+      "properties" : {
+        "date_debut_consommation" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "date_fin_consommation" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "flag_retour_zero" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "volume_brut" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "coeff_calcul" : {
+          "$ref" : "#/definitions/coeff_calcul"
+        },
+        "volume_converti" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "energie" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "type_qualif_conso" : {
+          "type" : "string",
+          "example" : "Mesuré"
+        },
+        "sens_flux_gaz" : {
+          "type" : "string",
+          "example" : "Consommation"
+        },
+        "statut_conso" : {
+          "type" : "string",
+          "example" : "Provisoire"
+        },
+        "journee_gaziere" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "type_conso" : {
+          "type" : "string",
+          "example" : "Informative journalier"
+        }
+      }
+    },
+    "Model_6" : {
+      "type" : "object",
+      "properties" : {
+        "date_debut_injection" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "date_fin_injection" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "flag_retour_zero" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "volume_brut" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "coeff_calcul" : {
+          "$ref" : "#/definitions/coeff_calcul"
+        },
+        "volume_converti" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "energie" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "type_qualif_injection" : {
+          "type" : "string",
+          "example" : "Mesuré"
+        },
+        "sens_flux_gaz" : {
+          "type" : "string",
+          "example" : "Consommation"
+        },
+        "statut_injection" : {
+          "type" : "string",
+          "example" : "Provisoire"
+        },
+        "journee_gaziere" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "type_injection" : {
+          "type" : "string",
+          "example" : "Informative journalier"
+        }
+      }
+    },
+    "profil" : {
+      "type" : "object",
+      "properties" : {
+        "profil_type_actuel" : {
+          "type" : "string",
+          "example" : "P012"
+        }
+      }
+    },
+    "Model_2" : {
+      "type" : "object",
+      "properties" : {
+        "date_releve" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "index_brut_debut" : {
+          "$ref" : "#/definitions/index_brut_debut"
+        },
+        "index_converti_debut" : {
+          "$ref" : "#/definitions/index_converti_debut"
+        }
+      }
+    },
+    "Model_3" : {
+      "type" : "object",
+      "properties" : {
+        "date_releve" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "index_brut_fin" : {
+          "$ref" : "#/definitions/index_brut_fin"
+        },
+        "index_converti_fin" : {
+          "$ref" : "#/definitions/index_converti_fin"
+        }
+      }
+    },
+    "bordereau_publication" : {
+      "type" : "object",
+      "properties" : {
+        "date_debut_bordereau" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "date_fin_bordereau" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "nb_jour_gazier" : {
+          "type" : "number",
+          "example" : 31.0
+        }
+      }
+    },
+    "index_brut_fin" : {
+      "type" : "object",
+      "properties" : {
+        "valeur_index" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "horodate_Index" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        }
+      }
+    },
+    "index_brut_debut" : {
+      "type" : "object",
+      "properties" : {
+        "valeur_index" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "horodate_Index" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        }
+      }
+    },
+    "retour_400_statut_restitution" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "example" : "1000005"
+        },
+        "message" : {
+          "type" : "string",
+          "example" : "L'identifiant du PCE n'est pas correctement formaté (GI+6 chiffres ou 14 chiffres)."
+        }
+      }
+    },
+    "pce_ko" : {
+      "type" : "object",
+      "required" : [ "id_pce" ],
+      "properties" : {
+        "id_pce" : {
+          "type" : "string",
+          "example" : "24231114"
+        }
+      }
+    },
+    "situation_compteur_detail" : {
+      "type" : "object",
+      "properties" : {
+        "numero_rue" : {
+          "type" : "string",
+          "example" : "9"
+        },
+        "nom_rue" : {
+          "type" : "string",
+          "example" : "ALLEE PIERRE AUGUSTE RENOIR"
+        },
+        "complement_adresse" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "code_postal" : {
+          "type" : "string",
+          "example" : "59100"
+        },
+        "commune" : {
+          "type" : "string",
+          "example" : "ROUBAIX"
+        }
+      }
+    },
+    "retour_500_donnees_techniques" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant"
+        },
+        "donnees_techniques" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_500_statut_restitution"
+        }
+      }
+    },
+    "retour_400_demander_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000026"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Le nom ou la raison sociale du titulaire doit être renseigné."
+        }
+      }
+    },
+    "retour_200_donnees_contractuelles" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant"
+        },
+        "donnees_contractuelles" : {
+          "$ref" : "#/definitions/donnees_contractuelles"
+        },
+        "statut_restitution" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "retour_500_transmettre_preuve" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000001"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_500_statut_restitution" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "example" : "2000000"
+        },
+        "message" : {
+          "type" : "string",
+          "example" : "Le serveur a rencontré une erreur lors de l’exécution de la requête, veuillez réessayer ultérieurement."
+        }
+      }
+    },
+    "releve_fin" : {
+      "type" : "object",
+      "properties" : {
+        "date_releve" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "raison_releve" : {
+          "type" : "string",
+          "example" : "RNO"
+        },
+        "libelle_raison_releve" : {
+          "type" : "string",
+          "example" : "Fin de situation"
+        },
+        "qualite_releve" : {
+          "type" : "string",
+          "example" : "Estimation"
+        },
+        "statut_releve" : {
+          "type" : "string",
+          "example" : "Normal"
+        },
+        "index_brut_fin" : {
+          "$ref" : "#/definitions/index_brut_fin"
+        },
+        "index_converti_fin" : {
+          "$ref" : "#/definitions/index_converti_fin"
+        }
+      }
+    },
+    "retour_500_fin_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000000"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_404_fin_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000001"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Aucun droit d'accès trouvé."
+        }
+      }
+    },
+    "retour_200_fin_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "0000000000"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "L'opération s'est déroulée avec succès."
+        }
+      }
+    },
+    "periode" : {
+      "type" : "object",
+      "required" : [ "valeur" ],
+      "properties" : {
+        "valeur" : {
+          "type" : "string",
+          "example" : "2018"
+        },
+        "date_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "date_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2019-01-01"
+        }
+      }
+    },
+    "donnees_techniques" : {
+      "type" : "object",
+      "properties" : {
+        "situation_compteur" : {
+          "$ref" : "#/definitions/situation_compteur_detail"
+        },
+        "caracteristiques_compteur" : {
+          "$ref" : "#/definitions/caracteristiques_compteur_detail"
+        },
+        "pitd" : {
+          "$ref" : "#/definitions/pitd_detail"
+        }
+      }
+    },
+    "Conso_restit_400" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_ko"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "releve_fin" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "consommation" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_400_statut_restitution"
+        }
+      }
+    },
+    "Injection_restit_400" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_ko"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "releve_fin" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "injection" : {
+          "type" : "string",
+          "example" : "null"
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_400_statut_restitution"
+        }
+      }
+    },
+    "pce" : {
+      "type" : "object",
+      "required" : [ "id_pce" ],
+      "properties" : {
+        "id_pce" : {
+          "type" : "string",
+          "example" : "24231114321628"
+        }
+      }
+    },
+    "donnees_contractuelles" : {
+      "type" : "object",
+      "properties" : {
+        "car" : {
+          "type" : "number",
+          "example" : 9475.0
+        },
+        "cja" : {
+          "type" : "number",
+          "example" : 0.0
+        },
+        "profil" : {
+          "$ref" : "#/definitions/profil"
+        },
+        "tarif_acheminement" : {
+          "type" : "string",
+          "example" : "T2"
+        },
+        "date_mes" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2019-12-15"
+        }
+      }
+    },
+    "consommation" : {
+      "type" : "object",
+      "properties" : {
+        "date_debut_consommation" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "date_fin_consommation" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "flag_retour_zero" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "volume_brut" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "coeff_calcul" : {
+          "$ref" : "#/definitions/coeff_calcul"
+        },
+        "volume_converti" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "energie" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "type_qualif_conso" : {
+          "type" : "string",
+          "example" : "Mesuré"
+        },
+        "sens_flux_gaz" : {
+          "type" : "string",
+          "example" : "Consommation"
+        },
+        "statut_conso" : {
+          "type" : "string",
+          "example" : "Provisoire"
+        },
+        "journee_gaziere" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09"
+        },
+        "type_conso" : {
+          "type" : "string",
+          "example" : "Publiée"
+        }
+      }
+    },
+    "injection" : {
+      "type" : "object",
+      "properties" : {
+        "date_debut_injection" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        },
+        "date_fin_injection" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-10T06:00:00+01:00"
+        },
+        "flag_retour_zero" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "volume_brut" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "coeff_calcul" : {
+          "$ref" : "#/definitions/coeff_calcul"
+        },
+        "volume_converti" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "energie" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "type_qualif_injection" : {
+          "type" : "string",
+          "example" : "Mesuré"
+        },
+        "sens_flux_gaz" : {
+          "type" : "string",
+          "example" : "Production"
+        },
+        "statut_injection" : {
+          "type" : "string",
+          "example" : "Provisoire"
+        },
+        "journee_gaziere" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09"
+        },
+        "type_injection" : {
+          "type" : "string",
+          "example" : "Publiée"
+        }
+      }
+    },
+    "pitd_detail" : {
+      "type" : "object",
+      "properties" : {
+        "identifiant_pitd" : {
+          "type" : "string",
+          "example" : "GD0991"
+        },
+        "libelle_pitd" : {
+          "type" : "string",
+          "example" : "LILLE"
+        }
+      }
+    },
+    "retour_500_consulter_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000001"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_400_donnees_techniques" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant_ko"
+        },
+        "donnees_techniques" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_400_statut_restitution"
+        }
+      }
+    },
+    "retour_500_demander_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000001"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_400_consulter_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000000"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "retour_400_transmettre_preuve" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000000"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "La forme de la requête est incorrecte."
+        }
+      }
+    },
+    "index_converti_debut" : {
+      "type" : "object",
+      "properties" : {
+        "valeur_index" : {
+          "type" : "number",
+          "example" : 12.0
+        },
+        "horodate_Index" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-02-09T06:00:00+01:00"
+        }
+      }
+    },
+    "demander_acces_in" : {
+      "type" : "object",
+      "required" : [ "code_postal", "role_tiers" ],
+      "properties" : {
+        "role_tiers" : {
+          "type" : "string",
+          "enum" : [ "AUTORISE_CONTRAT_FOURNITURE", "DETENTEUR_CONTRAT_FOURNITURE, AUTORISE_CONTRAT_INJECTION", "DETENTEUR_CONTRAT_INJECTION" ]
+        },
+        "raison_sociale" : {
+          "type" : "string",
+          "example" : "BabaTech",
+          "description" : "la raison sociale du titulaire si personne morale"
+        },
+        "nom_titulaire" : {
+          "type" : "string",
+          "example" : "null",
+          "description" : "le nom du titulaire si personne physique"
+        },
+        "code_postal" : {
+          "type" : "string",
+          "example" : "77900",
+          "description" : "code postal du PCE"
+        },
+        "courriel_titulaire" : {
+          "type" : "string",
+          "format" : "email",
+          "example" : "robert.dupont@dupont.fr",
+          "description" : "courriel utilisé par GRDF pour signifier au titulaire un nouveau droit d'accès par le tiers aux données de son PCE"
+        },
+        "numero_telephone_mobile_titulaire" : {
+          "type" : "string",
+          "format" : "numero_telephone_mobile_titulaire",
+          "example" : "0699999999",
+          "description" : "Numéro de téléphone mobile du titulaire"
+        },
+        "date_debut_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2019-07-05",
+          "description" : "date du consentement déclarée à GRDF par le Tiers"
+        },
+        "date_fin_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2024-01-31",
+          "description" : "date de fin du consentement déclarée à GRDF par le Tiers"
+        },
+        "perim_donnees_conso_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "perim_donnees_conso_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-12-31"
+        },
+        "perim_donnees_inj_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "perim_donnees_inj_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-12-31"
+        },
+        "perim_donnees_contractuelles" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_techniques" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_informatives" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_publiees" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Vrai"
+        }
+      },
+      "description" : "informations transmises au service `/pce/{id_pce}/droit_acces`"
+    },
+    "retour_500_donnees_contractuelles" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant"
+        },
+        "donnees_contractuelles" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_500_statut_restitution"
+        }
+      }
+    },
+    "retour_409_consulter_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000002"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Une erreur technique est survenue."
+        }
+      }
+    },
+    "Conso_restit" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "$ref" : "#/definitions/Model_2"
+        },
+        "releve_fin" : {
+          "$ref" : "#/definitions/Model_3"
+        },
+        "consommation" : {
+          "$ref" : "#/definitions/Model_4"
+        },
+        "statut_restitution" : {
+          "type" : "string",
+          "example" : "null"
+        }
+      }
+    },
+    "Injection_restit" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce"
+        },
+        "periode" : {
+          "$ref" : "#/definitions/periode"
+        },
+        "releve_debut" : {
+          "$ref" : "#/definitions/Model_2"
+        },
+        "releve_fin" : {
+          "$ref" : "#/definitions/Model_3"
+        },
+        "injection" : {
+          "$ref" : "#/definitions/Model_5"
+        },
+        "statut_restitution" : {
+          "type" : "string",
+          "example" : "null"
+        }
+      }
+    },
+    "retour_409_transmettre_preuve" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "2000000003"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "GRDF ne demande pas de preuve sur ce droit d'accès."
+        }
+      }
+    },
+    "demander_acces_out" : {
+      "type" : "object",
+      "properties" : {
+        "id_pce" : {
+          "type" : "string",
+          "example" : "GI999001",
+          "description" : "identifiant du PCE"
+        },
+        "role_tiers" : {
+          "type" : "string",
+          "description" : "le rôle du tiers dans l'accès",
+          "enum" : [ "AUTORISE_CONTRAT_FOURNITURE", "DETENTEUR_CONTRAT_FOURNITURE" ]
+        },
+        "id_droit_acces" : {
+          "type" : "string",
+          "example" : "9388f0df-14aa-02a9-e053-2b40ec0a76fd",
+          "description" : "UUID de l'accred"
+        },
+        "etat_droit_acces" : {
+          "type" : "string",
+          "example" : "A valider"
+        },
+        "date_creation_droit_acces" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2022-07-26 17:05:55",
+          "description" : "date de création du droit d'accès"
+        },
+        "date_debut_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2019-07-05",
+          "description" : "date du consentement déclarée à GRDF par le Tiers"
+        },
+        "date_fin_droit_acces" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-07-26",
+          "description" : "date de fin du consentement déclarée à GRDF par le Tiers"
+        },
+        "nom_titulaire" : {
+          "type" : "string",
+          "example" : "null",
+          "description" : "nom du titulaire si personne physique"
+        },
+        "raison_sociale_du_titulaire" : {
+          "type" : "string",
+          "example" : "BabaTech",
+          "description" : "raison sociale du titulaire si personne morale"
+        },
+        "courriel_titulaire" : {
+          "type" : "string",
+          "example" : "robert.dupont@dupont.fr"
+        },
+        "numero_telephone_mobile_titulaire" : {
+          "type" : "string",
+          "example" : "0699999999"
+        },
+        "code_postal" : {
+          "type" : "string",
+          "example" : "77900",
+          "description" : "code postal du PCE"
+        },
+        "perim_donnees_conso_debut" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-01-01"
+        },
+        "perim_donnees_conso_fin" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2023-12-31"
+        },
+        "perim_donnees_contractuelles" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_techniques" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_informatives" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Faux"
+        },
+        "perim_donnees_publiees" : {
+          "type" : "string",
+          "format" : "boolean",
+          "example" : "Vrai"
+        },
+        "parcours" : {
+          "type" : "string",
+          "example" : "TIERS_DIRECT"
+        }
+      },
+      "description" : "informations spécifiques du droit d'accès crée, retournées par le service `/demander_acces` "
+    },
+    "retour_404_demander_acces" : {
+      "type" : "object",
+      "required" : [ "code_statut_traitement", "message_retour_traitement" ],
+      "properties" : {
+        "code_statut_traitement" : {
+          "type" : "string",
+          "example" : "1000000006"
+        },
+        "message_retour_traitement" : {
+          "type" : "string",
+          "example" : "Le PCE est inconnu."
+        }
+      }
+    },
+    "retour_400_donnees_contractuelles" : {
+      "type" : "object",
+      "properties" : {
+        "pce" : {
+          "$ref" : "#/definitions/pce_identifiant_ko"
+        },
+        "donnees_contractuelles" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statut_restitution" : {
+          "$ref" : "#/definitions/retour_400_statut_restitution"
+        }
+      }
+    },
+    "caracteristiques_compteur_detail" : {
+      "type" : "object",
+      "properties" : {
+        "frequence" : {
+          "type" : "string",
+          "example" : "6M"
+        },
+        "client_sensible_mig" : {
+          "type" : "string",
+          "example" : "Oui"
+        }
+      }
+    }
+  },
+  "x-axway" : {
+    "serviceType" : "rest",
+    "basePaths" : [ "http://api.grdf.fr", "https://api.grdf.fr" ],
+    "expired" : false,
+    "retirementDate" : 0,
+    "corsEnabled" : true,
+    "deprecated" : false,
+    "availableSDK" : {
+      "ios-swift" : "/discovery/sdk/453c73a1-d813-497e-bae0-9124da5b47ba/ios-swift",
+      "titanium" : "/discovery/sdk/453c73a1-d813-497e-bae0-9124da5b47ba/titanium",
+      "android" : "/discovery/sdk/453c73a1-d813-497e-bae0-9124da5b47ba/android",
+      "nodejs" : "/discovery/sdk/453c73a1-d813-497e-bae0-9124da5b47ba/nodejs"
+    },
+    "apiResourceType" : "swagger20",
+    "id" : "453c73a1-d813-497e-bae0-9124da5b47ba",
+    "state" : "published",
+    "accessGrantedDate" : 1669652101739
+  }
+}
