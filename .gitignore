@@ -8,3 +8,13 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+resolved*openapi.json
+.aws-sam
+
+# Exclude generated code excepted generator script
+/tests/connectors/erp-klio/
+!generate.sh
+
+# Generated openapi files
+openapi.yaml
+/.idea

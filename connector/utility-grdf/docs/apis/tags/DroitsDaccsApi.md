@@ -3,13 +3,13 @@
 
 All URIs are relative to *http://api.grdf.fr/adict/v2*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**consulter_acces**](#consulter_acces) | **get** /droits_acces | Consulter mes droits d&#x27;accès
-[**droit_acces**](#droit_acces) | **put** /pce/{id_pce}/droit_acces | Déclarer l&#x27;accès aux données d&#x27;un PCE
-[**fin_acces**](#fin_acces) | **patch** /droit_acces/{id_droit_acces} | Révoquer un droit d&#x27;accès en tant que tiers AUTORISE
-[**p_ost__droits_acces**](#p_ost__droits_acces) | **post** /droits_acces | Consulter des droits d&#x27;accès spécifiques
-[**preuve**](#preuve) | **put** /droit_acces/{id_droit_acces}/preuves | Transmettre une preuve
+| Method                                          | HTTP request                                  | Description                                               |
+|-------------------------------------------------|-----------------------------------------------|-----------------------------------------------------------|
+| [**consulter_acces**](#consulter_acces)         | **get** /droits_acces                         | Consulter mes droits d&#x27;accès                         |
+| [**droit_acces**](#droit_acces)                 | **put** /pce/{id_pce}/droit_acces             | Déclarer l&#x27;accès aux données d&#x27;un PCE           |
+| [**fin_acces**](#fin_acces)                     | **patch** /droit_acces/{id_droit_acces}       | Révoquer un droit d&#x27;accès en tant que tiers AUTORISE |
+| [**p_ost__droits_acces**](#p_ost__droits_acces) | **post** /droits_acces                        | Consulter des droits d&#x27;accès spécifiques             |
+| [**preuve**](#preuve)                           | **put** /droit_acces/{id_droit_acces}/preuves | Transmettre une preuve                                    |
 
 # **consulter_acces**
 <a name="consulter_acces"></a>

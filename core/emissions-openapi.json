@@ -1,0 +1,335 @@
+{
+  "openapi" : "3.0.0",
+  "components": {
+    "schemas": {
+      "TimeRange": {
+        "description": "Time Ranges are defined by the start time, the end time and the time step. The start and end times must be aligned on the natural boundary of the time step. This means that if the time step is a number of hours, the start and end times must fall on an exact hour. For days, it's a little bit more complex because days change around the world according to the time zone. The time zone offsets are mandatory and must be related to the same time zone on start and end.",
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-01-01T00:00:00+02:00"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00+02:00"
+          },
+          "step": {
+            "oneOf": [
+              {
+                "type": "number",
+                "format": "double",
+                "example": 3600
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "example": [
+                  2678400,
+                  2419200,
+                  2674800,
+                  2592000,
+                  2678400,
+                  2592000,
+                  2678400,
+                  2678400,
+                  2592000,
+                  2682000,
+                  2592000,
+                  2678400
+                ]
+              }
+            ],
+            "description": "Step can be either a single number or an array of numbers expressing the duration of time steps in seconds. Use an array when successive time intervals do not have the same length, like months, which have a variable number of days."
+          }
+        }
+      },
+      "Entity": {
+        "description": "The business entities form a hierarchy which describes the forms of control taken into account for ESG reporting. Legal entities use the type 'Company', other organisation units like business units must use the type 'Division', and the type 'Step' describes a significant part of a business process, like shipping of finished goods, or an energy-intensive industrial operation.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "parameters-openapi.json#/components/schemas/EntityId"
+          },
+          "parent": {
+            "$ref": "parameters-openapi.json#/components/schemas/EntityId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "Company",
+              "Division",
+              "Step"
+            ]
+          },
+          "image": {
+            "type": "string",
+            "format": "uri"
+          },
+          "details": {
+            "type": "object",
+            "properties": {
+              "supplier": {
+                "type": "boolean"
+              },
+              "customer": {
+                "type": "boolean"
+              },
+              "ownOperation": {
+                "type": "boolean"
+              },
+              "financialControl": {
+                "type": "boolean"
+              },
+              "operationalControl": {
+                "type": "boolean"
+              },
+              "capital": {
+                "type": "boolean"
+              },
+              "registration": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Area": {
+        "description": "The geographic areas form a hierarchy, but a client need not use all the levels of the hierarchy. Many clients do not have a worldwide presence and don't even need the Country level. The Country level is nevertheless mandatory because it is implicitly part of the addresses. World Regions can be defined freely by the client, to fit their own organization.\n A company can have several locations in the same city. They can be normal business locations or simply automated business asset like electric vehicle public charging stations. Large locations, for instance industrial sites, can be further divided in units. This is helpful if energy metering is distinct in the various units or when the units are separated by significant distances, for instance on a mining site. Units can have specific geographic coordinates.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "parameters-openapi.json#/components/schemas/AreaId"
+          },
+          "parent": {
+            "$ref": "parameters-openapi.json#/components/schemas/AreaId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "World Region",
+              "Continent",
+              "Country",
+              "State",
+              "Region",
+              "County",
+              "City",
+              "Location",
+              "Unit"
+            ]
+          },
+          "details": {
+            "description": "The details property gives the geographic position and connects the areas to entities.",
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "format": "double",
+                "description": "Latitude in WGS-84 referential."
+              },
+              "long": {
+                "type": "number",
+                "format": "double",
+                "description": "Longitude in WGS-84 referential."
+              },
+              "alt": {
+                "type": "number",
+                "format": "double",
+                "description": "Altitude above sea level in WGS-84 referential."
+              },
+              "operatorId": {
+                "$ref": "parameters-openapi.json#/components/schemas/EntityId"
+              },
+              "ownerId": {
+                "$ref": "parameters-openapi.json#/components/schemas/EntityId"
+              }
+            },
+            "required": [
+              "lat",
+              "long",
+              "operatorId",
+              "ownerId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
+      },
+      "Category": {
+        "description": "The categories form a hierarchy. The top-level mode is Climage Change. Each children is a different categorization system.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "parameters-openapi.json#/components/schemas/CategoryId"
+          },
+          "parent": {
+            "$ref": "parameters-openapi.json#/components/schemas/CategoryId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "era": {
+            "type": "string",
+            "enum": [
+              "U",
+              "O",
+              "D",
+              ""
+            ],
+            "description": "The era property associates a category with upstream, own or downstream environmental impacts. Own impacts are under direct operational control of the operating and owning entities. They are typically called scope 1 emissions when dealing with greenhouse gas emissions, and concern primarily the combustion of fossil fuels on site, process emissions or land use change, which permanently affect CO2 absorption by vegetation.\n\nIndirect emissions are classed upstream if they occur simply because the client's own operations are taking place. They could typically stop if the client stopped operations. They represent the accumulated carbon content of semi-finished supplies and raw materials used by the client's own processes. The client has an indirect leverage on these emissions through the choice of his suppliers. For instance a client can enter into power purchase agreements to buy renewable electricity from a supplier (although BEGES doesn't take that into account given that if forces other electricity customer into higher carbon content as a consequence in a zero-sum game).\n\nEnvironmental impacts induced by deliveries to customers or distributors, and those hypothesized to occur during the typical use phase and end-of-life phase of the products or services, are all counted as downstream emissions."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "era"
+        ]
+      },
+      "CompressedDataPoint": {
+        "description": "### Function\nIt represents a constant intensity emission of greenhouse gas expressed as CO2 equivalent.\n\n### Structure\nThe structure of the vector is described here because the OpenApi Object Schema does not allow fixed-length, fixed-function arrays.\n\n- start: Positive integer representing the start step, where zero and one are the start and the end of the time interval starting at the 'start' of the time range.\n- start_percentage: Double, percentage value describing where the actual initial instant is in the starting time interval.\n- intensity: Double, environmental impact intensity value in S.I. units of impact (e.g. kgCO2eq) per second.\n- end: Positive integer representing the last step of the time range. The emission period must be fully enclosed.\n- end_percentage: Double, percentage value describing where the actual final instant is in the final time interval concerned by this environmental impact.\n- Own business entity involved (EntityId)\n- Geographic area of own entity (AreaId)\n- Third-party entity involved in the operation, or self if own emission (EntityId)\n- Category of emission according to the selected protocol\n",
+        "type": "array",
+        "items": {
+           "type": "number"
+        },
+        "maxItems": 9,
+        "minItems": 9
+      },
+      "DataRange": {
+        "description": "A data ranges is a cube of data returned in response to a time_range in the request.",
+        "type": "object",
+        "properties": {
+          "time_range": {
+            "$ref": "#/components/schemas/TimeRange"
+          },
+          "indexes": {
+            "type": "object",
+            "properties": {
+              "entity": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Entity"
+                }
+              },
+              "area": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Area"
+                }
+              },
+              "category": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "description": "Array of compressed data points.",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/CompressedDataPoint"
+            }
+          }
+        }
+      },
+      "EmissionsData": {
+        "description": "An array of JSON objects describing greenhouse gas emissions.",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/DataRange"
+        }
+      },
+      "ProtocolChoices": {
+        "description": "JSON response sent with HTTP code 300 when the Accept header is missing.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "href": {
+              "type": "string",
+              "format": "uri"
+            },
+            "Content-Type": {
+              "type": "string"
+            },
+            "q": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "BEGES",
+            "href": "https://api.natixar.pro/core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges",
+            "Content-Type": "application/vnd.ntxr.co2track.v1+json; version=beges",
+            "q": 1
+          },
+          {
+            "name": "GHG Protocol",
+            "href": "https://api.natixar.pro/core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges",
+            "Content-Type": "application/vnd.ntxr.co2track.v1+json; version=ghgprotocol",
+            "q": 2
+          },
+          {
+            "name": "BEGES v5",
+            "href": "https://api.natixar.pro/core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges",
+            "Content-Type": "application/vnd.ntxr.co2track.v1+json; version=begesv5",
+            "q": 2
+          },
+          {
+            "name": "ISO 14067",
+            "href": "https://api.natixar.pro/core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges",
+            "Content-Type": "application/vnd.ntxr.co2track.v1+json; version=isotr140692013",
+            "q": 2
+          }
+        ]
+      }
+    },
+    "responses": {
+      "RangeNotSatisfiable416": {
+        "description": "Returned by the endpoint /scenarios/{id}/ranges when a range in the Accept header, does not follow the prescribed format.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "https://static.natixar.pro/schemas/core/components-openapi.json#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0002-0001",
+              "message": "Invalid time range! Please comply with ISO 8601 format and other specifications."
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "OpenAPI 3.0 Specification of Greenhouse Gas Emissions API Request and Response Schemas.",
+    "version": "1.0.0"
+  },
+  "paths": {}
+}

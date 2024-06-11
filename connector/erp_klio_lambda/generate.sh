@@ -11,7 +11,7 @@ export PYTHON_POST_PROCESS_FILE="${PYTHON} core/utils.py run_yapf"
 # Resolve references
 OPEN_API_JSON=$(python3 core/utils.py dereference "connector/erp-klio-openapi.json")
 
-JAVA=/snap/pycharm-professional/387/jbr/bin/java
+JAVA=/snap/pycharm-professional/current/jbr/bin/java
 ${JAVA} -jar /home/jm/.cache/JetBrains/PyCharm2024.1/openapi/codegen/71aab8d6724718f581fedb5bf4fd5866/openapi-generator-cli-6.2.0.jar generate -g python-fastapi \
      -i "${OPEN_API_JSON}" \
      -o "connector/erp_klio_lambda" --enable-post-process-file \

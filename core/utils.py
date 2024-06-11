@@ -142,6 +142,8 @@ def run_yapf(args) -> None:
         print(f"An error occurred while running YAPF: {str(e)}")
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
+    else:
+        print(f"Reformatted '{file_path}'")
         
         
 def linker(target_api: FilePath):
@@ -263,4 +265,7 @@ if __name__ == '__main__':
             print("Usage: python3 utils.py linker <filepath>")
             sys.exit(0)
         linker(sys.argv[2])
+    else:
+        print("Commands: dereference format_md run_yapf linker")
+        sys.exit(1)
     

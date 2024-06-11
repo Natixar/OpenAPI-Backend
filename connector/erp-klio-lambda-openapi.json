@@ -201,7 +201,7 @@
         }
       },
       "Error": {
-        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components.json#/components/schemas/Error",
+        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components-openapi.json#/components/schemas/Error",
         "description": "Schema of a JSON Error Response Body",
         "type": "object",
         "required": [ "code", "message" ],
@@ -217,7 +217,7 @@
     },
     "responses": {
       "ScenarioNotFound404": {
-        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components.json#/components/responses/ScenarioNotFound404",
+        "x-comment": "Duplicates https://static.natixar.pro/schemas/core/components-openapi.json#/components/responses/ScenarioNotFound404",
         "x-status": "404",
         "description": "Not Found",
         "content": {

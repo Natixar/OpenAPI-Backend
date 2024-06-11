@@ -14,6 +14,11 @@
       "tests"
     ]
   },
+  "packaging": {
+    "include": [
+      "**/*-openapi.json"
+    ]
+  },
   "context": {
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,

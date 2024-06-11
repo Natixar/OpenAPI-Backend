@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AWS Back End of the Natixar Environmental Impact Suite
+
+  Includes AWS Lambda Powertools
+
+Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Timeout: 5
+    MemorySize: 128
+    Runtime: python3.11
+
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Resources:
+  CoreApiFunction:
+    Type: AWS::Serverless::Function     # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Handler: core_api.handler
+      CodeUri: api_lambda
+      Description: API Service for the Natixar CO2 Tracker Front End
+      Architectures:
+      - x86_64
+      Tracing: Active
+      Events:
+        HelloPath:
+          Type: Api           # More info about API Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-api.html
+          Properties:
+            Path: /hello
+            Method: GET
+             # Powertools env vars: https://awslabs.github.io/aws-lambda-powertools-python/#environment-variables
+      Environment:
+        Variables:
+          POWERTOOLS_SERVICE_NAME: PowertoolsCoreApi
+          POWERTOOLS_METRICS_NAMESPACE: Powertools
+          LOG_LEVEL: INFO
+      Tags:
+        LambdaPowertools: python
+
+  CoreAuthorizationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: authorizer.handler
+      CodeUri: auth_lambda
+      Description: Authorization Service for the Natixar CO2 Tracker Front End
+      Architectures:
+      - x86_64
+      Tracing: Active
+      Events:
+        HelloPath:
+          Type: Api
+          Properties:
+            Path: /authorize
+            Method: POST
+      Environment:
+        Variables:
+          POWERTOOLS_SERVICE_NAME: PowertoolsCoreAuth
+          POWERTOOLS_METRICS_NAMESPACE: Powertools
+          LOG_LEVEL: INFO
+      Tags:
+        LambdaPowertools: python
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+Outputs:
+  NatixarCO2TrackApi:
+    Description: REST API endpoint URL for Prod environment for the environmental impact Natixar SaaS
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/core/v1"
+
+  CoreApiFunction:
+    Description: Core API Lambda Function ARN
+    Value: !GetAtt CoreApiFunction.Arn

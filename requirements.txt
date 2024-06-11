@@ -1,2 +1,13 @@
-aws-cdk-lib==2.138.0
+aws-cdk-lib==2.139.0
 constructs>=10.0.0,<11.0.0
+aws-prototyping-sdk.type-safe-api>=0.19,<0.20
+cloudy-with-a-chance-of-meatballs.cdk-lambda-token-authorizer-jwt>=0.1,<0.2
+
+fastapi~=0.110.2
+mangum~=0.17.0
+jsonref~=1.1.0
+more-itertools~=10.2.0
+boto3~=1.34.96
+botocore~=1.34.96
+pytest~=8.2.0
+astor~=0.8.1

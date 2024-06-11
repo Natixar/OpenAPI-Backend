@@ -1,0 +1,18 @@
+{
+  "type": "TOKEN",
+  "authorizationToken": "NONE",
+  "methodArn": "arn:aws:execute-api:eu-west-3:975050054956:CoreCO2TrackAPI/oper/get/scenarios/{scenarioId}/ranges",
+  "headers": {
+    "Accept": "application/vnd.ntxr.co2track.v1+json; version=ghgprotocol",
+    "Accept-Encoding": "gzip, deflate, sdch",
+    "Cache-Control": "max-age=0",
+    "Host": "api.natixar.pro",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Natixar CO2 Tracker React App 1.0"
+  },
+  "multiValueHeaders": {
+  },
+  "pathParameters": {
+    "scenarioId": "516588d7-d3f4-131a-c29c-5bbe6090f0ad",
+  }
+}

@@ -1,0 +1,59 @@
+{
+      "x-source": "https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#apigateway-example-event",
+      "x-comment": "This is an example: all headers will be present in either 'headers' or 'multiValueHeaders'.",
+      "resource": "/",
+      "path": "/",
+      "httpMethod": "GET",
+      "requestContext": {
+          "accountId": "123456789012",
+          "resourceId": "123abc",
+          "stage": "prod",
+          "requestId": "c6af9ac6-7b61-11e6-9a3e-71f2b348f6d1",
+          "identity": {
+              "cognitoIdentityPoolId": null,
+              "accountId": null,
+              "cognitoIdentityId": null,
+              "caller": null,
+              "apiKey": null,
+              "sourceIp": "123.123.123.123",
+              "accessKey": null,
+              "cognitoAuthenticationType": null,
+              "cognitoAuthenticationProvider": null,
+              "userArn": null,
+              "userAgent": "Custom User Agent String",
+              "user": null
+          },
+          "resourcePath": "/",
+          "httpMethod": "GET",
+          "path": "/Prod/"
+      },
+      "headers": {
+          "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+          "accept-encoding": "gzip, deflate, br",
+          "Host": "70ixmpl4fl.execute-api.us-east-2.amazonaws.com",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+          "X-Amzn-Trace-Id": "Root=1-5e66d96f-7491f09xmpl79d18acf3d050"
+      },
+      "multiValueHeaders": {
+          "accept": [
+              "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+          ],
+          "accept-encoding": [
+              "gzip, deflate, br"
+          ]
+      },
+      "queryStringParameters": {
+        "name": "value"
+      },
+      "multiValueQueryStringParameters": {
+        "name": [ "value1", "value2" ]
+      },
+      "pathParameters": {
+        "proxy": "/examplepath"
+      },
+      "stageVariables": {
+        "stageVarName": "stageVarValue"
+      },
+      "body": "eyJ0ZXN0IjoiYm9keSJ9",
+      "isBase64Encoded": true
+  }

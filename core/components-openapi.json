@@ -1,0 +1,151 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "Client": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/schemas/ClientId"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the client",
+            "example": "Agro Novae Industrie, SAS"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the client",
+            "example": "industriel@agronovae.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number of the client",
+            "example": "+33 4 12 34 56 78"
+          },
+          "defaultScenario": {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/schemas/ScenarioId"
+          }
+        }
+      },
+      "Scenario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/schemas/ScenarioId"
+          },
+          "title": {
+            "type": "string",
+            "description": "Name of the scenario"
+          },
+          "parentScenarioId": {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/schemas/ScenarioId"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "timeRange": {
+                "type": "string",
+                "description": "Time range covered by the scenario data"
+              },
+              "dataQuality": {
+                "type": "string",
+                "description": "Information about data quality"
+              }
+            }
+          }
+        }
+      },
+      "NewScenario": {
+        "description": "## New Scenario Request Schema\nThe operation creates the database tables needed to support another trace of activity. Only the human-readable title is required.\n\nIf left unspecified, the UUID will be generated automatically. The value provided will be checked to comply with UUID format.\n\nIf a parent scenario is specified, this scenario will act as a separate data layer that accepts negative resource uses corresponding to savings made possible by organisational changes and/or investments in clean tech.",
+        "type": "object",
+        "required": [ "title" ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Name of the new scenario"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the new scenario"
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the new scenario"
+          },
+          "parentScenarioId": {
+            "$ref": "https://static.natixar.pro/schemas/core/parameters-openapi.json#/components/schemas/ScenarioId"
+          }
+        }
+      },
+      "Error": {
+        "description": "Schema of a JSON Error Response Body",
+        "type": "object",
+        "required": [ "code", "message" ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ClientNotFound404": {
+        "description": "Client Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0001-0003",
+              "message": "Client with ID '77c7a3e7-f53f-4a88-b6d8-64539afde62c' was not found!"
+            }
+          }
+        }
+      },
+      "ScenarioNotFound404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0001-0002",
+              "message": "Scenario with ID '67c7a3e7-f53f-4a88-b6d8-64539afde62c' was not found!"
+            }
+          }
+        }
+      },
+      "InternalServerError500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0001-0004",
+              "message": "An unexpected error occurred in the server!"
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "Generic Schemas and Responses Used Throughout the APIs.",
+    "version": "1.0.0"
+  },
+  "paths": {}
+}

@@ -1,0 +1,616 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "The Natixar ESG impact assessment open API"
+  },
+  "servers": [
+    {
+      "description": "Operational API",
+      "url": "https://api.natixar.pro/core/{version}",
+      "variables": {
+        "version": {
+          "enum": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "default": "v1"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/clients": {
+      "post": {
+        "summary": "Create a new client",
+        "description": "Create a new client with the provided name and description",
+        "operationId": "createClient",
+        "tags": [
+          "Clients"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "components-openapi.json#/components/schemas/Client"
+              },
+              "example": {
+                "name": "Agro Novae Industrie, SAS",
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a client. URN is returned in the Location header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Client"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      },
+      "get": {
+        "summary": "List all clients",
+        "description": "List all clients. The clients are returned in a list.",
+        "operationId": "listClients",
+        "tags": [
+          "Clients"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of clients",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "components-openapi.json#/components/schemas/Client"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      }
+    },
+    "/clients/{clientId}": {
+      "get": {
+        "summary": "Get a client by ID",
+        "description": "Get a client by ID. If the client does not exist, a 404 error is returned.",
+        "operationId": "getClient",
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A client object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Client"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "components-openapi.json#/components/responses/ClientNotFound404"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a client by ID",
+        "description": "Update a client by ID. If the client does not exist, a 404 error is returned.",
+        "operationId": "updateClient",
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "components-openapi.json#/components/schemas/Client"
+              },
+              "example": {
+                "name": "Agro Novae Industrie, SAS",
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Client"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input provided"
+          },
+          "404": {
+            "$ref": "components-openapi.json#/components/responses/ClientNotFound404"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a client by ID",
+        "description": "Delete a client by ID. If the client does not exist, a 404 error is returned.",
+        "operationId": "deleteClient",
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted the client"
+          },
+          "404": {
+            "description": "Client not found"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      }
+    },
+    "/scenarios": {
+      "get": {
+        "summary": "List all scenarios",
+        "description": "List all scenarios. The scenarios are returned in a list.",
+        "operationId": "listScenarios",
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of scenarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "components-openapi.json#/components/schemas/Scenario"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new scenario",
+        "description": "### Definition\nA scenario represents a particular time line, with time series data on the activity.\n\n### Architecture\nA scenario may be a derivative of another one at a given date. A such, it acts as another layer of impact causes.",
+        "operationId": "createScenario",
+        "tags": [
+          "Scenario"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "components-openapi.json#/components/schemas/NewScenario"
+              },
+              "example": {
+                "title": "Installation of a solar water heater"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created scenario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Scenario"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      }
+    },
+    "/scenarios/{scenarioId}": {
+      "get": {
+        "summary": "Get a specific scenario",
+        "description": "### Definition\nA scenario represents a particular time line, with time series data on the activity.\n\n### Architecture\nA scenario may be a derivative of another one at a given date. A such, it acts as another layer of impact causes. For example, a child scenario depicting the installation of a solar water heater could include negative natural gas consumptions equivalent to the heat acquired by solar irradiation, based on a meteorological model.\n\n### Naming Scheme\n\nA scenario id is an UUID4, equivalent to 40 hexadecimal digits.",
+        "operationId": "getScenario",
+        "tags": [
+          "Scenario"
+        ],
+        "parameters": [
+          {
+            "$ref": "parameters-openapi.json#/components/parameters/ScenarioIdInPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A specific scenario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "components-openapi.json#/components/schemas/Scenario"
+                }
+              }
+            },
+            "links": {
+              "Get all data": {
+                "description": "Get all the time-series data for the scenario.",
+                "operationId": "getScenarioRanges",
+                "parameters": {
+                  "scenarioId": "$request.scenarioId"
+                }
+              },
+              "Get last year": {
+                "description": "Get the last year of data of the scenario.",
+                "operationId": "getScenarioRanges",
+                "parameters": {
+                  "scenarioId": "$request.scenarioId",
+                  "range": ""
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "components-openapi.json#/components/responses/ScenarioNotFound404"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a scenario",
+        "description": "Delete a secondary scenario. The default one cannot be deleted.",
+        "operationId": "deleteScenario",
+        "tags": [
+          "Scenario"
+        ],
+        "parameters": [
+          {
+            "$ref": "parameters-openapi.json#/components/parameters/ScenarioIdInPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Scenario deleted"
+          },
+          "404": {
+            "$ref": "components-openapi.json#/components/responses/ScenarioNotFound404"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      }
+    },
+    "/scenarios/{scenarioId}/ranges": {
+      "get": {
+        "summary": "Get a range of data from the scenario.",
+        "operationId": "getScenarioRanges",
+        "description": "### Function\nRetrieve the environmental impact data displayed by the dashboards. The data for the requested time **range** is discretized at the requested time **scale** and categorized according to the requested **protocol**.\n\nif the time range and the scale are not defined, the back-end will return the whole date at a suitable time scale, but if the protocol isn't defined, the answer will be HTTP 300, Multiple Choices, to elicit a choice.\n\n### Usage\nExample:\n```\nGET /core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges?time_ranges=%5B%7B%22start%22%3A%222023-01-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-01-02T00%3A00%3A00+02%3A00%22%7D%2C%7B%22start%22%3A%222023-02-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-02-02T00%3A00%3A00+02%3A00%22%7D%5D&scale=1d&protocol=begesv5\nHost: api.natixar.pro\n\nuser-agent: curl/7.68.0\naccept: */*\n```\n### Returns\nThe endpoint returns a JSON array of one large object per requested time range, in the same order as the request.\n\n### Remarks\nSupersedes /scenarios/{scenarioId}/ranges.",
+        "externalDocs": {
+          "description": "# API Specification-Data Endpoint (current revision)",
+          "url": "https://docs.google.com/document/d/1kndLG5AxwOdeWPuOYKocnGJPY0TvwHj0zQ6aHXcIzdc"
+        },
+        "tags": [
+          "Scenario",
+          "Time Ranges"
+        ],
+        "parameters": [
+          {
+            "$ref": "parameters-openapi.json#/components/parameters/ScenarioIdInPath"
+          },
+          {
+            "name": "range",
+            "in": "header",
+            "description": "Indicates which part of the scenario should be returned.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple",
+            "examples": {
+              "1m2021": {
+                "summary": "The year 2021 in Paris at one-month time step.",
+                "description": "All the forms of ISO8601 are allowed as long as the date is specified.",
+                "value": "Range: 1m=2021-01-01T00:00:00+0100-2022-01-01T00:00:00+0100"
+              },
+              "1m2021alt": {
+                "summary": "The year 2021 in Paris at one-month time step using a duration.",
+                "description": "At most one of the ISO8601 timestamps can be replaced by an ISO8601 duration.",
+                "value": "Range: 1m=2021-01-01T00:00:00+0100-P1Y"
+              },
+              "1mW23": {
+                "summary": "The week 23 of 2022 in Paris at one-minute time step.",
+                "description": "ISO8601 has a convenient notation for weeks.",
+                "value": "Range: 1m=2022W23-1T00:00:00+0200-2022W24-1T00:00:00+0100"
+              },
+              "lastYear": {
+                "summary": "The most recent year of data in Paris at one-day time step, plus five years per quarter aligned on quarters boundaries.",
+                "description": "ISO8601 durations can also be used together with a semi-open range.",
+                "value": "Range: d=P1Y-\nRange: Q=P5Y-"
+              }
+            }
+          },
+          {
+            "name": "accept",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Use the Accept header to specify the protocol.",
+            "examples": {
+              "GHG Protocol": {
+                "summary": "Request data categorized according to international GHG Protocol categories.",
+                "value": "Accept: application/vnd.ntxr.co2track.v1+json; version=ghgprotocol"
+              },
+              "BEGES": {
+                "summary": "Request data categorized according to French BEGES categories.",
+                "value": "Accept: application/vnd.ntxr.co2track.v1+json; version=beges"
+              },
+              "BEGES v5": {
+                "summary": "Request data categorized according to French BEGESv5 categories.",
+                "value": "Accept: application/vnd.ntxr.co2track.v1+json; version=begesv5"
+              },
+              "ISO/TR 14069:2013": {
+                "summary": "Request data categorized according to international ISO/TR 14069:2013 categories.",
+                "value": "Accept: application/vnd.ntxr.co2track.v1+json; version=isotr140692013"
+              }
+            }
+          },
+          {
+            "name": "time_ranges",
+            "in": "query",
+            "deprecated": true,
+            "description": "JSON array of time range objects, each specifying a start and an end time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "json"
+            },
+            "example": "[{\"start\":\"2023-01-01T00:00:00+02:00\",\"end\":\"2023-01-02T00:00:00+02:00\"},{\"start\":\"2023-02-01T00:00:00+02:00\",\"end\":\"2023-02-02T00:00:00+02:00\"}]"
+          },
+          {
+            "name": "scale",
+            "in": "query",
+            "deprecated": true,
+            "description": "Specifies the scale of data aggregation. Deprecated. Specify the unit in a Range header instead.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1d"
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "deprecated": true,
+            "description": "Use a query parameter to specify the protocol. This method is discouraged in favor of the standard **Accept** header.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "GHG Protocol": {
+                "value": "ghgprotocol"
+              },
+              "BEGES": {
+                "value": "beges"
+              },
+              "BEGES v5": {
+                "value": "begesv5"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A representation of the entire data set. Also returned when a specific range is requested using the query parameter time_ranges.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "emissions-openapi.json#/components/schemas/EmissionsData"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "The ranges were described in the **Range** header(s) and the server returned a representation of requested ranges only. The server always returns code 200 when it successfully serves a request with the **time_ranges** passed as query parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "emissions-openapi.json#/components/schemas/EmissionsData"
+                }
+              }
+            }
+          },
+          "300": {
+            "x-comment": "Multiple Choices",
+            "description": "Multiple choices presents a list of the protocols available in the back-end.\n\nIt will typically be returned as the first response to a request with no time range, no time scale and no protocol, which conveys the available protocols to the front-end tool.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "emissions-openapi.json#/components/schemas/ProtocolChoices"
+                }
+              }
+            }
+          },
+          "302": {
+            "x-comment": "Found",
+            "description": ""
+          },
+          "304": {
+            "x-comment": "Not Modified",
+            "description": ""
+          },
+          "401": {
+            "x-comment": "Unauthorized",
+            "description": ""
+          },
+          "403": {
+            "x-comment": "Forbidden",
+            "description": ""
+          },
+          "404": {
+            "$ref": "components-openapi.json#/components/responses/ScenarioNotFound404"
+          },
+          "405": {
+            "x-comment": "Method Not Allowed",
+            "description": ""
+          },
+          "406": {
+            "x-comment": "Not Acceptable",
+            "description": ""
+          },
+          "413": {
+            "x-comment": "Payload Too Large",
+            "description": "Returned when the aggregated range request result in more than 10080 time intervals."
+          },
+          "416": {
+            "$ref": "emissions-openapi.json#/components/responses/RangeNotSatisfiable416"
+          },
+          "500": {
+            "$ref": "components-openapi.json#/components/responses/InternalServerError500"
+          }
+        }
+      }
+    },
+    "/mappings": {
+    },
+    "/data/ranges": {
+      "x-comment" : "This endpoint is deprecated, please use /scenarios/{id}/ranges",
+      "get": {
+        "summary": "Get a cube of data from the default scenario.",
+        "operationId": "getData",
+        "description": "### Function\nRetrieve the environmental impact data displayed by the dashboards. The data is discretized at the requested timescale and categorized according to the requested taxonomy.\n\n### Usage\nExample:\n```\nGET /core/v0/data/ranges?time_ranges=%5B%7B%22start%22%3A%222023-01-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-01-02T00%3A00%3A00+02%3A00%22%7D%2C%7B%22start%22%3A%222023-02-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-02-02T00%3A00%3A00+02%3A00%22%7D%5D&scale=1d&protocol=begesv5\nHost: api.natixar.pro\n\nuser-agent: curl/7.68.0\naccept: */*\n```\n### Returns\nThe endpoint returns exactly the same JSON object as /scenarios/{scenarioId}/ranges.\n\n### Remarks\nDeprecated. Superseded by /scenarios/{scenarioId}/ranges.",
+        "externalDocs": {
+          "description": "# API Specification-Data Endpoint (current revision)",
+          "url": "https://docs.google.com/document/d/1kndLG5AxwOdeWPuOYKocnGJPY0TvwHj0zQ6aHXcIzdc"
+        },
+        "tags": [
+          "Scenario",
+          "Data",
+          "Time Ranges",
+          "Deprecated"
+        ],
+        "parameters": [
+          {
+            "name": "time_ranges",
+            "in": "query",
+            "description": "JSON array of time range objects, each specifying a start and an end time.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "json"
+            },
+            "example": "[{\"start\":\"2023-01-01T00:00:00+02:00\",\"end\":\"2023-01-02T00:00:00+02:00\"},{\"start\":\"2023-02-01T00:00:00+02:00\",\"end\":\"2023-02-02T00:00:00+02:00\"}]"
+          },
+          {
+            "name": "scale",
+            "in": "query",
+            "description": "Specifies the scale of data aggregation.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1d"
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "Specifies the data protocol used.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "begesv5"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "emissions-openapi.json#/components/schemas/EmissionsData"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
