@@ -1,11 +1,12 @@
-from .implementation import get_data as get_data_impl
-from .implementation import get_scenario_ranges as get_scenario_ranges_impl
+from api_python_server.implementation import get_data as get_data_impl
+from api_python_server.implementation import get_scenario_ranges as get_scenario_ranges_impl
 from typing import Dict, List
 from fastapi import APIRouter, Body, Cookie, Depends, Form, Header, Path, Query, Response, Security, status
 from api_python_server.models.extra_models import TokenModel
 from api_python_server.models.get_scenario_ranges200_response_inner import GetScenarioRanges200ResponseInner
 from api_python_server.models.get_scenario_ranges300_response_inner import GetScenarioRanges300ResponseInner
 from api_python_server.models.list_clients500_response import ListClients500Response
+from api_python_server.security_api import get_token_client_api_key
 router = APIRouter()
 
 
@@ -28,12 +29,15 @@ async def get_data(time_ranges: str = Query(
                        None,
                        description='Specifies the scale of data aggregation.'),
                    protocol: str = Query(
-                       None, description='Specifies the data protocol used.')
+                       None, description='Specifies the data protocol used.'),
+                   token_client_api_key: TokenModel = Security(
+                       get_token_client_api_key)
                    ) -> List[GetScenarioRanges200ResponseInner]:
     """### Function Retrieve the environmental impact data displayed by the dashboards. The data is discretized at the requested timescale and categorized according to the requested taxonomy.  ### Usage Example: &#x60;&#x60;&#x60; GET /core/v0/data/ranges?time_ranges&#x3D;%5B%7B%22start%22%3A%222023-01-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-01-02T00%3A00%3A00+02%3A00%22%7D%2C%7B%22start%22%3A%222023-02-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-02-02T00%3A00%3A00+02%3A00%22%7D%5D&amp;scale&#x3D;1d&amp;protocol&#x3D;begesv5 Host: api.natixar.pro  user-agent: curl/7.68.0 accept: */* &#x60;&#x60;&#x60; ### Returns The endpoint returns exactly the same JSON object as /scenarios/{scenarioId}/ranges.  ### Remarks Deprecated. Superseded by /scenarios/{scenarioId}/ranges."""
     return await get_data_impl(time_ranges=time_ranges,
                                scale=scale,
-                               protocol=protocol)
+                               protocol=protocol,
+                               token_client_api_key=token_client_api_key)
 
 
 @router.get(
@@ -123,11 +127,15 @@ async def get_scenario_ranges(
             None,
             description=
             'Use a query parameter to specify the protocol. This method is discouraged in favor of the standard **Accept** header.'
-        )) -> List[GetScenarioRanges200ResponseInner]:
+        ),
+        token_client_api_key: TokenModel = Security(get_token_client_api_key)
+) -> List[GetScenarioRanges200ResponseInner]:
     """### Function Retrieve the environmental impact data displayed by the dashboards. The data for the requested time **range** is discretized at the requested time **scale** and categorized according to the requested **protocol**.  if the time range and the scale are not defined, the back-end will return the whole date at a suitable time scale, but if the protocol isn&#39;t defined, the answer will be HTTP 300, Multiple Choices, to elicit a choice.  ### Usage Example: &#x60;&#x60;&#x60; GET /core/v1/scenarios/7fd937d5-1eb2-4028-859d-44cfd4e98a12/ranges?time_ranges&#x3D;%5B%7B%22start%22%3A%222023-01-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-01-02T00%3A00%3A00+02%3A00%22%7D%2C%7B%22start%22%3A%222023-02-01T00%3A00%3A00+02%3A00%22%2C%22end%22%3A%222023-02-02T00%3A00%3A00+02%3A00%22%7D%5D&amp;scale&#x3D;1d&amp;protocol&#x3D;begesv5 Host: api.natixar.pro  user-agent: curl/7.68.0 accept: */* &#x60;&#x60;&#x60; ### Returns The endpoint returns a JSON array of one large object per requested time range, in the same order as the request.  ### Remarks Supersedes /scenarios/{scenarioId}/ranges."""
-    return await get_scenario_ranges_impl(scenarioId=scenarioId,
-                                          range=range,
-                                          accept=accept,
-                                          time_ranges=time_ranges,
-                                          scale=scale,
-                                          protocol=protocol)
+    return await get_scenario_ranges_impl(
+        scenarioId=scenarioId,
+        range=range,
+        accept=accept,
+        time_ranges=time_ranges,
+        scale=scale,
+        protocol=protocol,
+        token_client_api_key=token_client_api_key)

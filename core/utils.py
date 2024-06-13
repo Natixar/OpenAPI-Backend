@@ -227,10 +227,12 @@ def linker(target_api: FilePath):
         tree = EllipsisReplacer().visit(tree)
         ast.fix_missing_locations(tree)
     
+        # Extract namespace package name from ``target_api``
+        package = target_api.split(os.sep)[3]
         with open(source_file, "w") as output:
             # Write "from implementation import funcname as funcname_impl" lines
             for function_name in imports:
-                output.write(f"from .implementation import {function_name} as {function_name}_impl\n")
+                output.write(f"from {package}.implementation import {function_name} as {function_name}_impl\n")
             output.write(astor.to_source(tree))
             
     replace_ellipsis_with_impl(target_api)

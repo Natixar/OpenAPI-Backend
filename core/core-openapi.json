@@ -21,6 +21,37 @@
     }
   ],
   "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Return server health information",
+        "operationId": "healthCheck",
+        "tags": [
+          "Health"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/clients": {
       "post": {
         "summary": "Create a new client",
@@ -63,6 +94,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "components-openapi.json#/components/responses/Unauthorized401"
           },
           "500": {
             "$ref": "components-openapi.json#/components/responses/InternalServerError500"
@@ -219,10 +253,15 @@
     "/scenarios": {
       "get": {
         "summary": "List all scenarios",
-        "description": "List all scenarios. The scenarios are returned in a list.",
+        "description": "### Function\nList all scenarios. When called with a client API key, only list that client's scenarios.\n\n### Format\nThe scenarios are returned in a list of objects following the Scenario schema.",
         "operationId": "listScenarios",
         "tags": [
           "Scenario"
+        ],
+        "security": [
+          {
+            "client_api_key": []
+          }
         ],
         "responses": {
           "200": {
@@ -249,6 +288,11 @@
         "operationId": "createScenario",
         "tags": [
           "Scenario"
+        ],
+        "security": [
+          {
+            "client_api_key": []
+          }
         ],
         "requestBody": {
           "required": true,
@@ -287,6 +331,11 @@
         "operationId": "getScenario",
         "tags": [
           "Scenario"
+        ],
+        "security": [
+          {
+            "client_api_key": []
+          }
         ],
         "parameters": [
           {
@@ -336,6 +385,11 @@
         "tags": [
           "Scenario"
         ],
+        "security": [
+          {
+            "client_api_key": []
+          }
+        ],
         "parameters": [
           {
             "$ref": "parameters-openapi.json#/components/parameters/ScenarioIdInPath"
@@ -366,6 +420,11 @@
         "tags": [
           "Scenario",
           "Time Ranges"
+        ],
+        "security": [
+          {
+            "client_api_key": []
+          }
         ],
         "parameters": [
           {
@@ -565,6 +624,11 @@
           "Time Ranges",
           "Deprecated"
         ],
+        "security": [
+          {
+            "client_api_key": []
+          }
+        ],
         "parameters": [
           {
             "name": "time_ranges",
@@ -612,5 +676,26 @@
         }
       }
     }
-  }
+  },
+  "components": {
+    "securitySchemes": {
+      "admin_api_key": {
+        "type": "apiKey",
+        "description": "Temporary security scheme based on an API key: back office API",
+        "in": "header",
+        "name": "x-admin-api-key"
+      },
+      "client_api_key": {
+        "type": "apiKey",
+        "description": "Temporary security scheme based on an API key: client API",
+        "in": "header",
+        "name": "x-client-api-key"
+      }
+    }
+  },
+  "security": [
+    {
+      "admin_api_key": []
+    }
+  ]
 }

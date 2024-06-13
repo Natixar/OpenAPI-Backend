@@ -9,18 +9,21 @@ cd "${PROJECT_DIR}" || exit 10
 
 PACKAGE_NAME="api_python_server"
 # Generate API files
-generate_server_api 8081 /core/v1 ${PACKAGE_NAME}
+generate_server_api 8081 /core/v1 ${PACKAGE_NAME} python:3.9
 
 # Add implementation file(s) to the API files
 LAMBDA_NAME=core
 APIS_DIR="${PROJECT_DIR}/core/api_${LAMBDA_NAME}_lambda/src/${PACKAGE_NAME}/apis"
-(cd "${SCRIPT_DIR}" || exit 11 ; \
- ln -f "${LAMBDA_NAME}-implementation.py" "${APIS_DIR}/implementation.py")
+#(cd "${SCRIPT_DIR}" || exit 11 ; \
+# ln -f "${LAMBDA_NAME}-implementation.py" "${APIS_DIR}/implementation.py")
 
 # Automated code updates
 # Loop over all APIs
-for api in "clients" "data" "deprecated" "scenario" "time_ranges"; do
+for api in "clients" "data" "deprecated" "health" "scenario" "time_ranges"; do
+    echo -n
     finalize_api_file "${APIS_DIR}" "$api"
 done
 
+# Finalize security API
+finalize_api_file "${PROJECT_DIR}/core/api_${LAMBDA_NAME}_lambda/src/${PACKAGE_NAME}" "security"
 # Automated improvements of docs: if needed, see tests/connectors/erp-klio/generate.sh

@@ -18,6 +18,8 @@ def test_create_scenario(client: TestClient):
     create_scenario_request = {"title":"Installation of a solar water heater"}
 
     headers = {
+        "admin_api_key": "special-key",
+        "client_api_key": "special-key",
     }
     response = client.request(
         "POST",
@@ -37,6 +39,8 @@ def test_delete_scenario(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
+        "client_api_key": "special-key",
     }
     response = client.request(
         "DELETE",
@@ -55,6 +59,7 @@ def test_get_data(client: TestClient):
     """
     params = [("time_ranges", '[{\"start\":\"2023-01-01T00:00:00+02:00\",\"end\":\"2023-01-02T00:00:00+02:00\"},{\"start\":\"2023-02-01T00:00:00+02:00\",\"end\":\"2023-02-02T00:00:00+02:00\"}]'),     ("scale", '1d'),     ("protocol", 'begesv5')]
     headers = {
+        "client_api_key": "special-key",
     }
     response = client.request(
         "GET",
@@ -74,6 +79,8 @@ def test_get_scenario(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
+        "client_api_key": "special-key",
     }
     response = client.request(
         "GET",
@@ -94,6 +101,7 @@ def test_get_scenario_ranges(client: TestClient):
     headers = {
         "range": 'Range: 1m=2021-01-01T00:00:00+0100-2022-01-01T00:00:00+0100',
         "accept": 'Accept: application/vnd.ntxr.co2track.v1+json; version=ghgprotocol',
+        "client_api_key": "special-key",
     }
     response = client.request(
         "GET",
@@ -113,6 +121,8 @@ def test_list_scenarios(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
+        "client_api_key": "special-key",
     }
     response = client.request(
         "GET",

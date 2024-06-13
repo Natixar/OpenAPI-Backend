@@ -13,6 +13,7 @@ def test_get_data(client: TestClient):
     """
     params = [("time_ranges", '[{\"start\":\"2023-01-01T00:00:00+02:00\",\"end\":\"2023-01-02T00:00:00+02:00\"},{\"start\":\"2023-02-01T00:00:00+02:00\",\"end\":\"2023-02-02T00:00:00+02:00\"}]'),     ("scale", '1d'),     ("protocol", 'begesv5')]
     headers = {
+        "client_api_key": "special-key",
     }
     response = client.request(
         "GET",

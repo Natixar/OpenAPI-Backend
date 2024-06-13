@@ -15,6 +15,7 @@ def test_create_client(client: TestClient):
     list_clients200_response_inner = {"name":"Agro Novae Industrie, SAS","id":1}
 
     headers = {
+        "admin_api_key": "special-key",
     }
     response = client.request(
         "POST",
@@ -34,6 +35,7 @@ def test_delete_client(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
     }
     response = client.request(
         "DELETE",
@@ -52,6 +54,7 @@ def test_get_client(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
     }
     response = client.request(
         "GET",
@@ -70,6 +73,7 @@ def test_list_clients(client: TestClient):
     """
 
     headers = {
+        "admin_api_key": "special-key",
     }
     response = client.request(
         "GET",
@@ -89,6 +93,7 @@ def test_update_client(client: TestClient):
     list_clients200_response_inner = {"name":"Agro Novae Industrie, SAS","id":1}
 
     headers = {
+        "admin_api_key": "special-key",
     }
     response = client.request(
         "PUT",

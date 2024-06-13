@@ -4,7 +4,7 @@
 # Functions assume that:
 #  SCRIPT_DIR points to the directory containing the xxx-generate.sh script (core or connector/erp_klio_lambda)
 #  PROJECT_DIR is the root of the project (AWS_backend) one to three levels above SCRIPT_DIR
-#  $(dirname ${SCRIPT_DIR}) with the "_lambda" suffix removed if present, is the API_NAME (core or erp_klio)
+#  $(dirname ${SCRIPT_DIR}) with the "_lambda" suffix removed if present, is the api_name (core or erp_klio)
 
 #  The OpenAPI file must be ${SCRIPT_DIR}/${API_NAME}-openapi.json
 #
@@ -20,6 +20,7 @@
 # 1:  Server port (mandatory)
 # 2:  API path prefix (mandatory, e.g. /core/v1)
 # 3:  API name override (optional)
+# 4:  Python version override (defaults to codegen 6 default - 3.7 - , syntax python:3.x)
 function generate_server_api() {
   local server_port
   local lambda
@@ -28,27 +29,43 @@ function generate_server_api() {
   server_port="$1"  # e.g. 8080
 
   if [[ ! "$server_port" =~ ^[0-9]+$ ]]; then
-    echo "Error: server port must be an integer"
+    echo "Error: server port must be an integer, not '$1'"
   fi
+  shift
 
   local api_path_prefix
-  api_path_prefix="$2"  # e.g. /core/v1
+  api_path_prefix="$1"  # e.g. /core/v1
 
   if [[ ! "$api_path_prefix" =~ ^/ ]]; then
-    echo "Error: API path prefix must start with /"
+    echo "Error: API path prefix must start with /. '$1' is invalid."
   fi
 
   if [[ -z "${server_port}" || -z "${api_path_prefix}" ]]; then
     echo "Error: server port and API path prefix must be provided"
   fi
+  shift
 
   lambda=$(basename "${SCRIPT_DIR}")  # e.g. core
-  export API_NAME=${lambda%_lambda}  # e.g. core
-  folder="${SCRIPT_DIR}/api_${API_NAME}_lambda"
-  openapi_filename="${SCRIPT_DIR}/${API_NAME}-openapi.json"
+  api_name=${lambda%_lambda}  # e.g. core
+  folder="${SCRIPT_DIR}/api_${api_name}_lambda"
+  openapi_filename="${SCRIPT_DIR}/${api_name}-openapi.json"
 
+  # If there are arguments left, look if the last one is a python version
+  local python_version
+  if [[ $# -ge 1 ]]; then
+    if [[ "${*: -1}" =~ ^python:(.+) ]]; then
+      python_version=${BASH_REMATCH[1]}
+    fi
+    if [[ $# -ge 2 || -z "${python_version}" ]]; then
+      api_name="${1:-${api_name}}"  # e.g. api_python_server
+      shift
+    fi
+    # if [[ -n "${python_version}" ]]; then
+    #   shift
+    # fi
+  fi
+  echo "Using Python ${python_version}"
   # Eventual override
-  API_NAME="${3:-${API_NAME}}"  # e.g. api_python_server
 
   # Set Python and JAVA versions if unset
   export PYTHON=${PYTHON:-/home/jm/.pyenv/versions/3.11.0/envs/aws-cdk/bin/python3}
@@ -66,13 +83,14 @@ function generate_server_api() {
   PROPS="${PROPS},sortModelPropertiesByRequiredFlag=true"
   PROPS="${PROPS},ensureUniqueParams=true"
   PROPS="${PROPS},allowUnicodeIdentifiers=false"
-  PROPS="${PROPS},legacyDiscriminatorBehavior=true"
+  PROPS="${PROPS},legacyDiscriminatorBehavior=false"
   PROPS="${PROPS},enumUnknownDefaultCase=true"
   PROPS="${PROPS},disallowAdditionalPropertiesIfNotPresent=false"
   PROPS="${PROPS},sourceFolder=src"
   PROPS="${PROPS},packageVersion=1.0.0"
-  PROPS="${PROPS},packageName=${API_NAME}"
+  PROPS="${PROPS},packageName=${api_name}"
   PROPS="${PROPS},serverPort=${server_port}"
+  PROPS="${PROPS},fastapiImplementationPackage=${api_name}"
 
   ${JAVA} --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED \
       -jar /home/jm/.cache/JetBrains/PyCharm2024.1/openapi/codegen/71aab8d6724718f581fedb5bf4fd5866/openapi-generator-cli-6.2.0.jar \
@@ -81,8 +99,48 @@ function generate_server_api() {
       -o "${folder}" --enable-post-process-file \
       --additional-properties="${PROPS}"
 
-  API_NAME="${API_NAME}" fix_fastapi_root_path "${api_path_prefix}" "${folder}/src/${API_NAME}/main.py"
+  API_NAME="${api_name}" fix_fastapi_root_path "${api_path_prefix}" "${folder}/src/${api_name}/main.py"
+  API_NAME="${lambda}" set_codegen_python_version "${python_version:-3.7}"
 }
+
+# Update the Python version in the generated Dockerfile and add a COPY instruction to load implementation
+# from the folder ${SCRIPT_DIR}/${API_NAME}-implementation, which should contain Python packages.
+# Also update the Python version and minimum Python version in setup.cfg.
+# May use SCRIPT_DIR and API_NAME for default values.
+# 1: Python version (mandatory)
+# 2: Dockerfile (optional defaults to "${SCRIPT_DIR}/api_${API_NAME}_lambda/Dockerfile")
+function set_codegen_python_version() {
+  local version="$1"
+  local target="${2:-${SCRIPT_DIR}/api_${API_NAME}_lambda/Dockerfile}"
+  local target_dir
+  target_dir=$(dirname "${target}")
+
+  # Update setup.cfg metadata regarding the Python version
+  sed -i "s/python_requires = >= 3\.7\.\*/python_requires = >= ${version}.*/" "${target_dir}/setup.cfg"
+  sed -i "s/Programming Language :: Python :: 3\.7/Programming Language :: Python :: ${version}/" "${target_dir}/setup.cfg"
+
+  # Update the Dockerfile with the Python version
+  sed -i "s/python:3.7/python:${version}/g" "${target}"
+
+  # Copy implementation files via a symbolic link to bring them in the build context of Docker
+  rm -fr "${target_dir}/${API_NAME}-implementation"
+  cp -r "${SCRIPT_DIR}/${API_NAME}-implementation" "${target_dir}"
+  sed -i "/COPY \. \./a COPY ${API_NAME}-implementation/ ./src/" "${target}"
+
+  # Add option to include non-Python data files in the package to setup.cfg
+  sed -i '/^\[options\]$/a include_package_data = True' "${target_dir}/setup.cfg"
+
+  # Append the list of data files and patterns to include in the package
+  cat >> "${target_dir}/setup.cfg" <<EOF
+
+[options.package_data]
+# Specify package data
+api_python_server =
+  *.ndjson
+
+EOF
+}
+
 # The generated code has a bug that causes the following error: "Path parameters cannot have a default value"
 # The root cause is the presence of "None" instead of "..." in the generated code, inside a fastapi.Path object
 # constructor,
@@ -155,5 +213,5 @@ function finalize_api_file() {
   # This functions uses sister module (handwritten) implementation.py to provide suitable
   # implementation for each function. The implementation module must define functions bearing
   # the same name as the coroutine, with the exact same signature.
-  ${PYTHON} core/utils.py linker "$file_path"
+  ${PYTHON} core/utils.py linker $(realpath --relative-to=. "${file_path}")
 }

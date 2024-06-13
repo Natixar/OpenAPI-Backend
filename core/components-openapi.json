@@ -99,6 +99,20 @@
       }
     },
     "responses": {
+      "Unauthorized401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "0001-0001",
+              "message": "You are not authorized to access this resource!"
+            }
+          }
+        }
+      },
       "ClientNotFound404": {
         "description": "Client Not Found",
         "content": {
