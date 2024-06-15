@@ -418,8 +418,7 @@
           "url": "https://docs.google.com/document/d/1kndLG5AxwOdeWPuOYKocnGJPY0TvwHj0zQ6aHXcIzdc"
         },
         "tags": [
-          "Scenario",
-          "Time Ranges"
+          "Scenario"
         ],
         "security": [
           {
@@ -619,10 +618,7 @@
           "url": "https://docs.google.com/document/d/1kndLG5AxwOdeWPuOYKocnGJPY0TvwHj0zQ6aHXcIzdc"
         },
         "tags": [
-          "Scenario",
-          "Data",
-          "Time Ranges",
-          "Deprecated"
+          "Scenario"
         ],
         "security": [
           {
