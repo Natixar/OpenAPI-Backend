@@ -23,21 +23,21 @@ from api_python_server.models.create_scenario_request import CreateScenarioReque
 
 async def create_scenario(
     create_scenario_request: CreateScenarioRequest,
-    token_admin_api_key: TokenModel, token_client_api_key: TokenModel
+    token_client_api_key: TokenModel
 ) -> ListScenarios200ResponseInner:
     """ Create a new scenario """
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 async def delete_scenario(
-    scenarioId: str, token_admin_api_key: TokenModel, token_client_api_key: TokenModel
+    scenarioId: str, token_client_api_key: TokenModel
 ) -> None:
     """ Delete a scenario """
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)
 
 
 async def get_scenario(
-    scenarioId: str, token_admin_api_key: TokenModel, token_client_api_key: TokenModel
+    scenarioId: str, token_client_api_key: TokenModel
 ) -> ListScenarios200ResponseInner:
     """ Get a scenario """
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)
@@ -51,9 +51,7 @@ async def get_scenario_ranges(
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)
 
 
-async def list_scenarios(
-    token_admin_api_key: TokenModel, token_client_api_key: TokenModel
-) -> list[ListScenarios200ResponseInner]:
+async def list_scenarios(token_client_api_key: TokenModel) -> list[ListScenarios200ResponseInner]:
     """ List all scenarios """
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)
 
@@ -68,5 +66,7 @@ async def list_scenarios(
 async def get_data(
     time_ranges: str, scale: str, protocol: str, token_client_api_key: TokenModel
 ) -> list[GetScenarioRanges200ResponseInner]:
-    """ Get the data of a scenario """
+    """ Get the data of a scenario. This coroutine delegates to get_scenario_ranges, but first must
+        retrieve the scenarioId of the client for the default scenario
+    """
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED)

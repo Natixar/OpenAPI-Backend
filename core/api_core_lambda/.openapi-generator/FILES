@@ -9,11 +9,8 @@ requirements.txt
 setup.cfg
 src/api_python_server/apis/__init__.py
 src/api_python_server/apis/clients_api.py
-src/api_python_server/apis/data_api.py
-src/api_python_server/apis/deprecated_api.py
 src/api_python_server/apis/health_api.py
 src/api_python_server/apis/scenario_api.py
-src/api_python_server/apis/time_ranges_api.py
 src/api_python_server/main.py
 src/api_python_server/models/__init__.py
 src/api_python_server/models/create_scenario_request.py

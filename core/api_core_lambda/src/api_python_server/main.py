@@ -13,11 +13,8 @@
 from fastapi import FastAPI
 
 from api_python_server.apis.clients_api import router as ClientsApiRouter
-from api_python_server.apis.data_api import router as DataApiRouter
-from api_python_server.apis.deprecated_api import router as DeprecatedApiRouter
 from api_python_server.apis.health_api import router as HealthApiRouter
 from api_python_server.apis.scenario_api import router as ScenarioApiRouter
-from api_python_server.apis.time_ranges_api import router as TimeRangesApiRouter
 
 app = FastAPI(
     title="The Natixar ESG impact assessment open API",
@@ -27,8 +24,5 @@ app = FastAPI(
 )
 
 app.include_router(ClientsApiRouter)
-app.include_router(DataApiRouter)
-app.include_router(DeprecatedApiRouter)
 app.include_router(HealthApiRouter)
 app.include_router(ScenarioApiRouter)
-app.include_router(TimeRangesApiRouter)

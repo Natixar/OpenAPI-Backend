@@ -76,7 +76,7 @@ async def delete_scenario(scenarioId: str = Path(
                     'description': 'Successful response'
                 }
             },
-            tags=['Scenario', 'Data', 'Time Ranges', 'Deprecated'],
+            tags=['Scenario'],
             summary='Get a cube of data from the default scenario.',
             response_model_by_alias=True)
 async def get_data(time_ranges: str = Query(
@@ -187,7 +187,7 @@ async def get_scenario(scenarioId: str = Path(
             'description': 'Internal Server Error'
         }
     },
-    tags=['Scenario', 'Time Ranges'],
+    tags=['Scenario'],
     summary='Get a range of data from the scenario.',
     response_model_by_alias=True)
 async def get_scenario_ranges(
