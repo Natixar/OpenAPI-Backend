@@ -14,7 +14,7 @@ import csv
 # Import public libraries
 from sqlalchemy import Column, DateTime, BigInteger
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import Field, SQLModel, Session, Relationship, create_engine, select
+from sqlmodel import Field, SQLModel, Session, Relationship, create_engine, select, sess
 
 
 # Import application modules
