@@ -22,3 +22,5 @@ openapi.yaml
 # Copy into the container context
 /core/api_core_lambda/core-implementation/
 /core/api_core_lambda/.gitignore
+/scripts/.ipynb_checkpoints/
+/sam-app/
